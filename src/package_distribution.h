@@ -1,0 +1,32 @@
+typedef enum {
+    NOT_DELIVERED,
+    BEING_DELIVERED,
+    DELIVERED
+} delivery_status_e;
+
+typedef struct {
+    double height; // meters
+    double width; // meters
+    double length; // meters
+    double weight; // kilo
+    int priority;
+    int node_id;
+    int truck_id;
+    delivery_status_e delivery_status; // NOT_DELIVERED
+} package_t;
+
+typedef struct {
+    int area;
+    int location_x;
+    int location_y;
+    int id;
+    package_t packages[30];
+} node_t;
+
+typedef struct {
+    double max_weight; // 3500 kilo
+    double max_volume; // 19 cubic meters
+    int average_speed; // 60 kilometers an hour
+    int id;
+} truck_t;
+
