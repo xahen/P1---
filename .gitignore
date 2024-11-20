@@ -54,3 +54,6 @@ dkms.conf
 .idea
 cmake-build*
 build/
+
+# Flowchart backup files
+*.bkp
