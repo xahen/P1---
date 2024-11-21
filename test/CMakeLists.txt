@@ -6,9 +6,9 @@ FetchContent_Declare(mtest
 FetchContent_MakeAvailable(mtest)
 
 # We create a test driver executable
-add_executable(test_package_distribution test_package_distribution.c)
+add_executable(test_functions test_functions.c)
 # We link the library to the test driver
-target_link_libraries(test_package_distribution package_distribution mtest)
+target_link_libraries(test_functions package_functions mtest)
 
 # We add the test executable to CTest
-discover_tests(test_package_distribution)
+discover_tests(test_functions)
