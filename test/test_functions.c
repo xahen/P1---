@@ -86,7 +86,20 @@ TEST_CASE(test_get_delivery_status, {
     CHECK_FALSE(get_delivery_status(3) == "(null)");
 })
 
+TEST_CASE(test_calculate_trucks, {
+    package_t package = create_package(1, 1, 1, 2, 2, 2, 5);
+    double volume_filled = 0;
+    int trucks_needed = 0;
+
+    for (int i = 0; i < 20; i++) {
+        trucks_needed += calculate_trucks(package, &volume_filled, 0);
+    }
+
+    CHECK_EQ_INT(trucks_needed, 3);
+})
+
 // TODO:
 // TEST PRINT FUNCTIONS
+// THIS IS NOT POSSIBLE WITHOUT RETURNING A STRING (THESE FUNCTIONS DO NOT NEED TESTS ANYWAY)
 
-MAIN_RUN_TESTS(test_generate_random_package, test_create_truck, test_create_package, test_create_node, test_get_delivery_status);
+MAIN_RUN_TESTS(test_generate_random_package, test_create_truck, test_create_package, test_create_node, test_get_delivery_status, test_calculate_trucks);
