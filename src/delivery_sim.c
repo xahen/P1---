@@ -3,6 +3,15 @@
 
 #include "delivery_sim.h"
 
+char* get_delivery_status(delivery_status_e delivery_status) {
+    switch (delivery_status) {
+        case 0: return "NOT_DELIVERED";
+        case 1: return "BEING_DELIVERED";
+        case 2: return "DELIVERED";
+        default: return NULL;
+    }
+}
+
 void print_package(int selector, package_t package) {
     switch(selector) {
         case 0: printf("Package height: %.2lf meters\n", package.height);
@@ -19,7 +28,7 @@ void print_package(int selector, package_t package) {
             break;
         case 6: printf("Package truck_id: %d\n", package.truck_id);
             break;
-        case 7: printf("Package delivery_status: %d\n", package.delivery_status); // FUNKTION TIL PRINT AF STRING SKAL LAVES
+        case 7: printf("Package delivery_status: %s\n", get_delivery_status(package.delivery_status));
             break;
         default:
             for (int i = 0; i < 8; i++) {
