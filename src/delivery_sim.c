@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "delivery_sim.h"
 
@@ -80,3 +81,17 @@ void print_truck(int selector, truck_t truck) {
         }
 }
 
+package_t generate_random_package() {
+    int priority = rand() % 5 + 1;
+    int node_id = rand() % 5 + 1;
+    int truck_id = rand() % 5 + 1;
+
+    double height = rand() % 2 + 1;
+    double width = rand() % 2 + 1;
+    double length = rand() % 2 + 1;
+    double weight = rand() % 25 + 1;
+
+    package_t package = create_package(priority, node_id, truck_id, height, width, length, weight);
+
+    return package;
+}
