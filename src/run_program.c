@@ -1,4 +1,3 @@
-#include "resource_calculation.h"
 #include <stdio.h>
 #include <stdlib.h>
 
