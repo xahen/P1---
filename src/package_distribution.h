@@ -1,3 +1,6 @@
+// Include header file only ONCE
+#pragma once
+
 typedef enum {
     NOT_DELIVERED,
     BEING_DELIVERED,

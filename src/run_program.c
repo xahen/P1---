@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "package_distribution.h"
+#include <time.h>
 
 int main(void) {
+    srand(time(NULL));
 
     return 0;
 }
