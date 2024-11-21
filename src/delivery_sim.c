@@ -1,7 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "delivery_sim.h"
+
+char* get_delivery_status(delivery_status_e delivery_status) {
+    switch (delivery_status) {
+        case 0: return "NOT_DELIVERED";
+        case 1: return "BEING_DELIVERED";
+        case 2: return "DELIVERED";
+        default: return NULL;
+    }
+}
 
 void print_package(int selector, package_t package) {
     switch(selector) {
@@ -19,7 +29,7 @@ void print_package(int selector, package_t package) {
             break;
         case 6: printf("Package truck_id: %d\n", package.truck_id);
             break;
-        case 7: printf("Package delivery_status: %d\n", package.delivery_status); // FUNKTION TIL PRINT AF STRING SKAL LAVES
+        case 7: printf("Package delivery_status: %s\n", get_delivery_status(package.delivery_status));
             break;
         default:
             for (int i = 0; i < 8; i++) {
@@ -71,3 +81,17 @@ void print_truck(int selector, truck_t truck) {
         }
 }
 
+package_t generate_random_package() {
+    int priority = rand() % 5 + 1;
+    int node_id = rand() % 5 + 1;
+    int truck_id = rand() % 5 + 1;
+
+    double height = rand() % 2 + 1;
+    double width = rand() % 2 + 1;
+    double length = rand() % 2 + 1;
+    double weight = rand() % 25 + 1;
+
+    package_t package = create_package(priority, node_id, truck_id, height, width, length, weight);
+
+    return package;
+}
