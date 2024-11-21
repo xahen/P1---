@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "resource_calculation.h"
 
@@ -17,7 +18,20 @@ package_t temp_package() {
     return package;
 }
 
-int calculate_trucks(int orders, package_t package) {
+
+double calculate_trucks(int orders, package_t package) {
+
+    double volume = package.height * package.width * package.length;
+
+    double truck_volume = 41.472;
+
+    double max_packages = truck_volume / volume; ///spytter ud mændge af pakker
+
+    double trucks_amount = orders / max_packages;
+
+    return trucks_amount;
+
     
+
 
 }
