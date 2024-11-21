@@ -4,6 +4,8 @@
 
 #include "resource_calculation.h"
 
+#define truck_volume 41.472
+
 package_t temp_package() {
     package_t package;
     package.height = 0.5; // meters
@@ -19,17 +21,22 @@ package_t temp_package() {
 }
 
 
-double calculate_trucks(int orders, package_t package) {
+int calculate_trucks(package_t package, double *volume_filled, int truck_amount) {
 
     double volume = package.height * package.width * package.length;
 
-    double truck_volume = 41.472;
+    if (*volume_filled + volume < truck_volume) {
+        *volume_filled += volume;
+    } else {
+        *volume_filled = 0;
+        *volume_filled += volume;
+        truck_amount++;
+    }
 
-    double max_packages = truck_volume / volume; ///spytter ud mændge af pakker
+    //printf("%lf\n", *volume_filled);
 
-    double trucks_amount = orders / max_packages;
 
-    return trucks_amount;
+    return truck_amount;
 
     
 
