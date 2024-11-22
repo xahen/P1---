@@ -7,10 +7,14 @@
 #include "delivery_sim.h"
 #include "resource_calculation.h"
 
+//
+// TEST delivery_sim.h
+//
+
 TEST_CASE(test_generate_random_package, {
     srand(time(NULL));
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 250; i++) {
         package_t package = generate_random_package();
 
         CHECK_TRUE(package.height > 0 && package.height <= 2);
@@ -20,6 +24,17 @@ TEST_CASE(test_generate_random_package, {
         CHECK_TRUE(package.priority >= 1 && package.priority <= 5);
         CHECK_TRUE(package.node_id >= 1 && package.node_id <= 5);
         CHECK_TRUE(package.truck_id >= 1 && package.truck_id <= 5);
+    }
+})
+
+TEST_CASE(test_generate_random_node, {
+    for (int i = 0; i < 250; i++) {
+        node_t node = generate_random_node();
+
+        CHECK_TRUE(node.location_x >= 0 && node.location_x < 100);
+        CHECK_TRUE(node.location_y >= 0 && node.location_y < 100);
+        CHECK_TRUE(node.area == 0);
+        CHECK_TRUE(node.id == 0);
     }
 })
 
@@ -86,6 +101,10 @@ TEST_CASE(test_get_delivery_status, {
     CHECK_FALSE(get_delivery_status(3) == "(null)");
 })
 
+//
+// TEST resource_calculation.h
+//
+
 TEST_CASE(test_calculate_trucks, {
     package_t package = create_package(1, 1, 1, 2, 2, 2, 5);
     double volume_filled = 0;
@@ -98,5 +117,20 @@ TEST_CASE(test_calculate_trucks, {
     CHECK_EQ_INT(trucks_needed, 3);
 })
 
+//
+// TEST delivery_algorithm.h
+//
 
-MAIN_RUN_TESTS(test_generate_random_package, test_create_truck, test_create_package, test_create_node, test_get_delivery_status, test_calculate_trucks);
+
+//
+// INCLUDE TESTS
+//
+MAIN_RUN_TESTS(
+    test_generate_random_package,
+    test_generate_random_node,
+    test_create_truck,
+    test_create_package,
+    test_create_node,
+    test_get_delivery_status,
+    test_calculate_trucks
+    );

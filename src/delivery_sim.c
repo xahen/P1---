@@ -94,3 +94,15 @@ package_t generate_random_package() {
 
     return package;
 }
+
+node_t generate_random_node() {
+    int area = 0;
+    int id = 0;
+
+    int position_x = rand() % 100;
+    int position_y = rand() % 100;
+
+    node_t node = create_node(area, position_x, position_y, id);
+
+    return node;
+}
