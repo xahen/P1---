@@ -1,44 +1,36 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
 #include "resource_calculation.h"
+#include "delivery_sim.h"
 
-#define truck_volume 41.472
+// This can be a different value. Should we not just calculate it in calculate_trucks()?
+const double TRUCK_MAX_VOLUME = 20.0;
+const double TRUCK_MAX_WEIGHT = 1950.0;
 
-package_t temp_package() {
-    package_t package;
-    package.height = 0.5; // meters
-    package.width = 0.5; // meters
-    package.length = 0.5; // meters
-    package.weight = 1; // kilo
-    package.priority = 1; // how fast it needs to be delivered
-    package.node_id = 1; // the id of the node it needs to be delivered to
-    package.truck_id = 1; // the id of the truck it's being delivered in
-    package.delivery_status = NOT_DELIVERED; // the status of it's delivery
+// Maybe we should take weight into account as well.
+void calculate_trucks(package_t package, double *volume_filled, double *weight_filled, int *truck_amount) {
+    double package_volume = package.height * package.width * package.length;
 
-    return package;
-}
-
-
-int calculate_trucks(package_t package, double *volume_filled, int truck_amount) {
-
-    double volume = package.height * package.width * package.length;
-
-    if (*volume_filled + volume < truck_volume) {
-        *volume_filled += volume;
+    if (*volume_filled + package_volume < TRUCK_MAX_VOLUME && *weight_filled + package.weight < TRUCK_MAX_WEIGHT) {
+        *volume_filled += package_volume;
+        *weight_filled += package.weight;
     } else {
         *volume_filled = 0;
-        *volume_filled += volume;
-        truck_amount++;
+        *weight_filled = 0;
+        *volume_filled += package_volume;
+        *truck_amount += 1;
+    }
+}
+
+void truck_test(int orders) {
+    double volume_filled = 0;
+    double weight_filled = 0;
+    int truck_amount = 0;
+
+    for (int i = 0; i < orders; i++) {
+        package_t package = generate_random_package();
+        calculate_trucks(package, &volume_filled, &weight_filled, &truck_amount);
     }
 
-    //printf("%lf\n", *volume_filled);
-
-
-    return truck_amount;
-
-    
-
-
+    printf("%d\n", truck_amount);
 }

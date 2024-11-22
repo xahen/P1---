@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 #include "delivery_sim.h"
 
@@ -41,15 +40,13 @@ void print_package(int selector, package_t package) {
 
 void print_node(int selector, node_t node) {
     switch(selector) {
-        case 0: printf("Node area: %d\n", node.area);
+        case 0: printf("Node location_x: %d\n", node.location_x);
             break;
-        case 1: printf("Node location_x: %d\n", node.location_x);
+        case 1: printf("Node location_y: %d\n", node.location_y);
             break;
-        case 2: printf("Node location_y: %d\n", node.location_y);
+        case 2: printf("Node id: %d\n", node.id);
             break;
-        case 3: printf("Node id: %d\n", node.id);
-            break;
-        case 4:
+        case 3:
             printf("Node packages: ");
             printf("----------\n");
             for (int i = 0; i < 30; i++) {
@@ -58,7 +55,7 @@ void print_node(int selector, node_t node) {
             printf("----------\n");
             break;
         default:
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 4; i++) {
                 print_node(i, node);
             }
     }
@@ -86,12 +83,23 @@ package_t generate_random_package() {
     int node_id = rand() % 5 + 1;
     int truck_id = rand() % 5 + 1;
 
-    double height = rand() % 2 + 1;
-    double width = rand() % 2 + 1;
-    double length = rand() % 2 + 1;
-    double weight = rand() % 25 + 1;
+    double height = (rand() % 200 + 1) / 100.0;
+    double width = (rand() % 200 + 1) / 100.0;
+    double length = (rand() % 200 + 1) / 100.0;
+    double weight = (rand() % 2500 + 1) / 100.0;
 
     package_t package = create_package(priority, node_id, truck_id, height, width, length, weight);
 
     return package;
+}
+
+node_t generate_random_node() {
+    int id = 0;
+
+    int position_x = rand() % 100;
+    int position_y = rand() % 100;
+
+    node_t node = create_node(position_x, position_y, id);
+
+    return node;
 }

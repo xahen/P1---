@@ -1,4 +1,4 @@
 #include <package_distribution.h>
 
-package_t temp_package();
-int calculate_trucks(package_t package, double *volume_filled, int truck_amount);
+void calculate_trucks(package_t package, double *volume_filled, double *weight_filled, int *truck_amount);
+void truck_test(int orders);
