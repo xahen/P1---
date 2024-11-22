@@ -85,9 +85,9 @@ package_t generate_random_package() {
     int node_id = rand() % 5 + 1;
     int truck_id = rand() % 5 + 1;
 
-    double height = rand() % 2 + 1;
-    double width = rand() % 2 + 1;
-    double length = rand() % 2 + 1;
+    double height = (rand() % 200 + 1) / 100.0;
+    double width = (rand() % 200 + 1) / 100.0;
+    double length = (rand() % 200 + 1) / 100.0;
     double weight = rand() % 25 + 1;
 
     package_t package = create_package(priority, node_id, truck_id, height, width, length, weight);
