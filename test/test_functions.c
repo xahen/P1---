@@ -98,8 +98,5 @@ TEST_CASE(test_calculate_trucks, {
     CHECK_EQ_INT(trucks_needed, 3);
 })
 
-// TODO:
-// TEST PRINT FUNCTIONS
-// THIS IS NOT POSSIBLE WITHOUT RETURNING A STRING (THESE FUNCTIONS DO NOT NEED TESTS ANYWAY)
 
 MAIN_RUN_TESTS(test_generate_random_package, test_create_truck, test_create_package, test_create_node, test_get_delivery_status, test_calculate_trucks);
