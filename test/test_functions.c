@@ -92,7 +92,7 @@ TEST_CASE(test_calculate_trucks, {
     int trucks_needed = 0;
 
     for (int i = 0; i < 20; i++) {
-        trucks_needed += calculate_trucks(package, &volume_filled, 0);
+        calculate_trucks(package, &volume_filled, &trucks_needed);
     }
 
     CHECK_EQ_INT(trucks_needed, 3);
