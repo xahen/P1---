@@ -13,9 +13,9 @@ TEST_CASE(test_generate_random_package, {
     for (int i = 0; i < 5; i++) {
         package_t package = generate_random_package();
 
-        CHECK_TRUE(package.height >= 1 && package.height <= 2);
-        CHECK_TRUE(package.width >= 1 && package.width <= 2);
-        CHECK_TRUE(package.length >= 1 && package.length <= 2);
+        CHECK_TRUE(package.height > 0 && package.height <= 2);
+        CHECK_TRUE(package.width > 0 && package.width <= 2);
+        CHECK_TRUE(package.length > 0 && package.length <= 2);
         CHECK_TRUE(package.weight >= 1 && package.weight <= 25);
         CHECK_TRUE(package.priority >= 1 && package.priority <= 5);
         CHECK_TRUE(package.node_id >= 1 && package.node_id <= 5);
