@@ -48,5 +48,9 @@ graph_t *create_graph(int nodes_amount) {
     graph->nodes = nodes_amount;
     graph->adj_matrix = (int**)malloc(nodes_amount * sizeof(int*));
 
+    for (int i = 0; i < nodes_amount; i++) {
+        graph->adj_matrix[i] = (int*)calloc(nodes_amount, sizeof(int));
+    }
 
+    return graph;
 }
