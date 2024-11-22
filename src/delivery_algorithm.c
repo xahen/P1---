@@ -15,7 +15,16 @@ void add_edge(graph_t *graph, int node_src, int node_dest) {
 
 void display_matrix(graph_t *graph) {
     for (int i = 0; i < graph->nodes; i++) {
-
+        for (int j = 0; j < graph->nodes; j++) {
+            printf("%d ", graph->adj_matrix[i][j]);
+        }
+        printf("\n");
     }
+}
 
+void free_matrix(graph_t *graph) {
+    for(int i = 0; i < graph->nodes; i++) {
+        free(graph->adj_matrix[i]);
+    }
+    free(graph->adj_matrix);
 }
