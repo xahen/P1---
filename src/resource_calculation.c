@@ -16,7 +16,6 @@ void calculate_trucks(package_t package, double *volume_filled, double *weight_f
         *volume_filled += package_volume;
         *weight_filled += package.weight;
     } else {
-        printf("%lf\n", *weight_filled);
         *volume_filled = 0;
         *weight_filled = 0;
         *volume_filled += package_volume;

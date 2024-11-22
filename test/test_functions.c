@@ -105,13 +105,14 @@ TEST_CASE(test_get_delivery_status, {
 TEST_CASE(test_calculate_trucks, {
     package_t package = create_package(1, 1, 1, 2, 2, 2, 5);
     double volume_filled = 0;
+    double weight_filled = 0;
     int trucks_needed = 0;
 
     for (int i = 0; i < 20; i++) {
-        calculate_trucks(package, &volume_filled, &trucks_needed);
+        calculate_trucks(package, &volume_filled, &weight_filled, &trucks_needed);
     }
 
-    CHECK_EQ_INT(trucks_needed, 3);
+    CHECK_EQ_INT(trucks_needed, 9);
 })
 
 //
