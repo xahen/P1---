@@ -29,9 +29,8 @@ package_t create_package(int priority, int node_id, int truck_id, double height,
     return package;
 }
 
-node_t create_node(int area, int location_x, int location_y, int id) {
+node_t create_node(int location_x, int location_y, int id) {
     node_t node;
-    node.area = area;
     node.location_x = location_x;
     node.location_y = location_y;
     node.id = id;

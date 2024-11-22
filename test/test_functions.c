@@ -20,7 +20,7 @@ TEST_CASE(test_generate_random_package, {
         CHECK_TRUE(package.height > 0 && package.height <= 2);
         CHECK_TRUE(package.width > 0 && package.width <= 2);
         CHECK_TRUE(package.length > 0 && package.length <= 2);
-        CHECK_TRUE(package.weight >= 1 && package.weight <= 25);
+        CHECK_TRUE(package.weight > 0 && package.weight <= 25);
         CHECK_TRUE(package.priority >= 1 && package.priority <= 5);
         CHECK_TRUE(package.node_id >= 1 && package.node_id <= 5);
         CHECK_TRUE(package.truck_id >= 1 && package.truck_id <= 5);
@@ -33,7 +33,6 @@ TEST_CASE(test_generate_random_node, {
 
         CHECK_TRUE(node.location_x >= 0 && node.location_x < 100);
         CHECK_TRUE(node.location_y >= 0 && node.location_y < 100);
-        CHECK_TRUE(node.area == 0);
         CHECK_TRUE(node.id == 0);
     }
 })
@@ -70,14 +69,12 @@ TEST_CASE(test_create_package, {
 })
 
 TEST_CASE(test_create_node, {
-    int area = 1;
-    int location_x = 2;
-    int location_y = 3;
-    int id = 4;
+    int location_x = 1;
+    int location_y = 2;
+    int id = 3;
 
-    node_t node = create_node(area, location_x, location_y, id);
+    node_t node = create_node(location_x, location_y, id);
 
-    CHECK_TRUE(node.area == area);
     CHECK_TRUE(node.location_x == location_x);
     CHECK_TRUE(node.location_y == location_y);
     CHECK_TRUE(node.id == id);
