@@ -112,7 +112,7 @@ graph_t *generate_random_graph() {
 
     graph_t *graph = create_graph(node_amount);
 
-    for (int i = 0; i < rand() % node_amount * 2; i++) {
+    for (int i = 0; i < rand() % (node_amount * 2); i++) {
         int random_node_src = rand() % node_amount;
         int random_node_dst = rand() % node_amount;
         add_edge(graph, random_node_src, random_node_dst, rand() % 25 + 1);
