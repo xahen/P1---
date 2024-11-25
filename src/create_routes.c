@@ -17,7 +17,7 @@ void display_matrix(graph_t *graph) {
     printf("  ");
     for (int i = 0; i < graph->nodes; i++) {
         printf("\x1b[36m"); // Switch the text color in the terminal to blue
-        printf("%c\t", i + 65);
+        printf("%c ", i + 65);
     }
     printf("\n");
     for (int i = 0; i < graph->nodes; i++) {
