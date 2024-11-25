@@ -38,6 +38,16 @@ TEST_CASE(test_generate_random_node, {
     }
 })
 
+TEST_CASE(test_generate_random_graph, {
+    for (int i = 0; i < 250; i++) {
+        graph_t *graph = generate_random_graph();
+        
+        CHECK_TRUE(graph->nodes < 21);
+        CHECK_TRUE(graph->nodes > 3);
+        CHECK_TRUE(graph->adj_matrix != NULL);
+    }
+})
+
 TEST_CASE(test_create_truck, {
     int truck_id = 1;
 
@@ -178,6 +188,7 @@ TEST_CASE(test_free_matrix, {
 MAIN_RUN_TESTS(
     test_generate_random_package,
     test_generate_random_node,
+    test_generate_random_graph,
     test_create_truck,
     test_create_package,
     test_create_node,

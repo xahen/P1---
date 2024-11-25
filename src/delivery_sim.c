@@ -108,12 +108,18 @@ node_t generate_random_node() {
 // Should this really create a pointer?
 // The same goes for the create_graph function...
 graph_t *generate_random_graph() {
-    int node_amount = rand() % 25 + 4;
+    int node_amount = rand() % 17 + 4;
 
     graph_t *graph = create_graph(node_amount);
 
+    for (int i = 0; i < rand() % (node_amount * 3); i++) {
+        int random_node_src = rand() % node_amount;
+        int random_node_dst = rand() % node_amount;
+        add_edge(graph, random_node_src, random_node_dst, rand() % 26 + 1);
+    }
+
     for (int i = 0; i < node_amount - 1; i++) {
-        add_edge(graph, i, i + 1, rand() % 10 + 1);
+        add_edge(graph, i, i + 1, rand() % 26 + 1);
     }
 
     return graph;
