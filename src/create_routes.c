@@ -3,14 +3,14 @@
 
 #include "create_routes.h"
 
-void add_edge(graph_t *graph, int node_src, int node_dest) {
+void add_edge(graph_t *graph, int node_src, int node_dest, int weight) {
     if (node_src >= graph->nodes || node_dest >= graph->nodes) {
         printf("Invalid nodes:\n");
         exit(EXIT_FAILURE);
     }
 
-    graph->adj_matrix[node_src][node_dest] = 1;
-    graph->adj_matrix[node_dest][node_src] = 1;
+    graph->adj_matrix[node_src][node_dest] = weight;
+    graph->adj_matrix[node_dest][node_src] = weight;
 }
 
 void display_matrix(graph_t *graph) {
