@@ -7,3 +7,4 @@ void print_truck(int selector, truck_t truck);
 
 package_t generate_random_package();
 node_t generate_random_node();
+graph_t *generate_random_graph();

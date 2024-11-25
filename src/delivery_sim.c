@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "delivery_sim.h"
+#include "create_routes.h"
 
 char* get_delivery_status(delivery_status_e delivery_status) {
     switch (delivery_status) {
@@ -102,4 +103,18 @@ node_t generate_random_node() {
     node_t node = create_node(position_x, position_y, id);
 
     return node;
+}
+
+// Should this really create a pointer?
+// The same goes for the create_graph function...
+graph_t *generate_random_graph() {
+    int node_amount = rand() % 25 + 4;
+
+    graph_t *graph = create_graph(node_amount);
+
+    for (int i = 0; i < node_amount - 1; i++) {
+        add_edge(graph, i, i + 1, rand() % 25 + 1);
+    }
+
+    return graph;
 }
