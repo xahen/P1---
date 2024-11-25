@@ -44,7 +44,9 @@ node_t create_node(int location_x, int location_y, int id) {
 }
 
 graph_t *create_graph(int nodes_amount) {
-    graph_t *graph;
+    graph_t *graph = (graph_t*)malloc(sizeof(graph_t));
+
+
     graph->nodes = nodes_amount;
     graph->adj_matrix = (int**)malloc(nodes_amount * sizeof(int*));
 
