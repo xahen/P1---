@@ -143,19 +143,19 @@ TEST_CASE(test_add_edge, {
 
     int node_src = 1;
     int node_dst = 2;
-    add_edge(graph, node_src, node_dst);
+    add_edge(graph, node_src, node_dst, 1);
     CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
     CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
     node_src = 3;
     node_dst = 4;
-    add_edge(graph, node_src, node_dst);
+    add_edge(graph, node_src, node_dst, 1);
     CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
     CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
     node_src = 8;
     node_dst = 9;
-    add_edge(graph, node_src, node_dst);
+    add_edge(graph, node_src, node_dst, 1);
     CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
     CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
