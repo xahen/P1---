@@ -92,6 +92,18 @@ TEST_CASE(test_create_node, {
     }
 })
 
+TEST_CASE(test_create_graph, {
+    int nodes_amount = 20;
+
+    graph_t *graph = create_graph(nodes_amount);
+
+    CHECK_EQ_INT(graph->nodes, nodes_amount);
+    CHECK_EQ_INT(graph->adj_matrix[0][0], 0);
+    CHECK_EQ_INT(graph->adj_matrix[nodes_amount - 1][nodes_amount - 1], 0);
+
+    free_matrix(graph);
+})
+
 TEST_CASE(test_get_delivery_status, {
     CHECK_EQ_STRING(get_delivery_status(0), "NOT_DELIVERED");
     CHECK_EQ_STRING(get_delivery_status(1), "BEING_DELIVERED");
@@ -122,6 +134,45 @@ TEST_CASE(test_calculate_trucks, {
 
 
 //
+// TEST create_routes.h
+//
+TEST_CASE(test_add_edge, {
+    int nodes_amount = 20;
+
+    graph_t *graph = create_graph(nodes_amount);
+
+    int node_src = 1;
+    int node_dst = 2;
+    add_edge(graph, node_src, node_dst);
+    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
+    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
+
+    node_src = 3;
+    node_dst = 4;
+    add_edge(graph, node_src, node_dst);
+    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
+    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
+
+    node_src = 8;
+    node_dst = 9;
+    add_edge(graph, node_src, node_dst);
+    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
+    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
+
+    free_matrix(graph);
+})
+
+TEST_CASE(test_free_matrix, {
+    int nodes_amount = 20;
+
+    graph_t *graph = create_graph(nodes_amount);
+
+    free_matrix(graph);
+
+    CHECK_TRUE(graph->adj_matrix == NULL);
+})
+
+//
 // INCLUDE TESTS
 //
 MAIN_RUN_TESTS(
@@ -130,6 +181,9 @@ MAIN_RUN_TESTS(
     test_create_truck,
     test_create_package,
     test_create_node,
+    test_create_graph,
     test_get_delivery_status,
-    test_calculate_trucks
-    );
+    test_calculate_trucks,
+    test_add_edge,
+    test_free_matrix
+);

@@ -36,4 +36,5 @@ void free_matrix(graph_t *graph) {
         free(graph->adj_matrix[i]);
     }
     free(graph->adj_matrix);
+    graph->adj_matrix = NULL;
 }
