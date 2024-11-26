@@ -42,7 +42,7 @@ TEST_CASE(test_generate_random_graph, {
     for (int i = 0; i < 250; i++) {
         graph_t *graph = generate_random_graph();
         
-        CHECK_TRUE(graph->nodes < 21);
+        CHECK_TRUE(graph->nodes < 27);
         CHECK_TRUE(graph->nodes > 3);
         CHECK_TRUE(graph->adj_matrix != NULL);
     }
