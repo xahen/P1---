@@ -3,4 +3,4 @@
 
 #include "delivery_algorithm.h"
 
-// Dijkstra's algorithm
+// A* algorithm
