@@ -108,8 +108,11 @@ TEST_CASE(test_create_graph, {
     graph_t *graph = create_graph(nodes_amount);
 
     CHECK_EQ_INT(graph->nodes, nodes_amount);
-    CHECK_EQ_INT(graph->adj_matrix[0][0], 0);
-    CHECK_EQ_INT(graph->adj_matrix[nodes_amount - 1][nodes_amount - 1], 0);
+    for (int i = 0; i < nodes_amount; i++) {
+        for (int j = 0; j < nodes_amount; j++) {
+            CHECK_EQ_INT(graph->adj_matrix[i][j], 0);
+        }
+    }
 
     free_matrix(graph);
 })
