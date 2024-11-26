@@ -19,7 +19,6 @@ typedef struct {
 } package_t;
 
 typedef struct {
-    int area;
     int location_x;
     int location_y;
     int id;
@@ -33,8 +32,15 @@ typedef struct {
     int id;
 } truck_t;
 
+typedef struct {
+    int nodes;
+    int **adj_matrix;
+} graph_t;
+
 truck_t create_truck(int id);
 
 package_t create_package(int priority, int node_id, int truck_id, double height, double width, double length, double weight);
 
-node_t create_node(int area, int location_x, int location_y, int id);
+node_t create_node(int location_x, int location_y, int id);
+
+graph_t *create_graph(int nodes_amount);

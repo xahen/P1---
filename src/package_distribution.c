@@ -29,9 +29,8 @@ package_t create_package(int priority, int node_id, int truck_id, double height,
     return package;
 }
 
-node_t create_node(int area, int location_x, int location_y, int id) {
+node_t create_node(int location_x, int location_y, int id) {
     node_t node;
-    node.area = area;
     node.location_x = location_x;
     node.location_y = location_y;
     node.id = id;
@@ -42,4 +41,18 @@ node_t create_node(int area, int location_x, int location_y, int id) {
     }
 
     return node;
+}
+
+graph_t *create_graph(int nodes_amount) {
+    graph_t *graph = (graph_t*)malloc(sizeof(graph_t));
+
+
+    graph->nodes = nodes_amount;
+    graph->adj_matrix = (int**)malloc(nodes_amount * sizeof(int*));
+
+    for (int i = 0; i < nodes_amount; i++) {
+        graph->adj_matrix[i] = (int*)calloc(nodes_amount, sizeof(int));
+    }
+
+    return graph;
 }
