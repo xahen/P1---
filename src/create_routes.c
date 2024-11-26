@@ -17,18 +17,23 @@ void display_matrix(graph_t *graph) {
     printf("   ");
     for (int i = 0; i < graph->nodes; i++) {
         printf("\x1b[36m"); // Switch the text color in the terminal to blue
-        printf("%c \t", i + 65);
+        printf("%c   ", i + 65);
     }
-    printf("\n");
+    printf("\n\n");
     for (int i = 0; i < graph->nodes; i++) {
         printf("\x1b[36m"); // Switch the text color in the terminal to blue
         printf("%c  ", i + 65);
         printf("\x1b[0m"); // Reset the text color back to white (for the numbers)
         for (int j = 0; j < graph->nodes; j++) {
-            printf("%d\t", graph->adj_matrix[i][j]);
+            if (graph->adj_matrix[i][j] > 9) {
+                printf("%d  ", graph->adj_matrix[i][j]);
+            } else {
+                printf("%d   ", graph->adj_matrix[i][j]);
+            }
         }
-        printf("\n");
+        printf("\n\n");
     }
+    printf("\n");
 }
 
 void free_matrix(graph_t *graph) {
