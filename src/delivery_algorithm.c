@@ -3,6 +3,29 @@
 
 #include "delivery_algorithm.h"
 
+// Binary tree
+void add_node_to_tree(node_t *new_node, node_t *tree_root) {
+    if (tree_root == NULL) {
+        tree_root = new_node;
+        return;
+    }
+    if (new_node->f < tree_root->f) {
+        if (tree_root->left == NULL) {
+            tree_root->left = new_node;
+        } else {
+            add_node_to_tree(new_node, tree_root->left);
+        }
+        return;
+    }
+    if (new_node->f >= tree_root->f) {
+        if (tree_root->right == NULL) {
+            tree_root->right = new_node;
+        } else {
+            add_node_to_tree(new_node, tree_root->right);
+        }
+    }
+}
+
 // A* algorithm
 void a_star(graph_t *graph, node_t start_node, node_t end_node) {
     tree_t unvisited_nodes = {&start_node};
