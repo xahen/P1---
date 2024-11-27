@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "delivery_algorithm.h"
 
@@ -34,6 +35,15 @@ node_t *find_lowest_f_in_tree(node_t *tree_root) {
     return find_lowest_f_in_tree(tree_root->left);
 }
 
+// Heuristic function - calculates distance as a direct line between two nodes
+double heuristic(node_t current_node, node_t current_node_neighbour) {
+    double calc_current_node = pow(current_node.location_x - current_node.location_y, 2);
+    double calc_current_neighbour_node = pow(current_node_neighbour.location_x - current_node_neighbour.location_y, 2);
+
+    double sum = calc_current_node + calc_current_neighbour_node;
+    double distance = sqrt(sum);
+    return distance;
+}
 
 // A* algorithm
 void a_star(graph_t *graph, node_t start_node, node_t end_node) {
