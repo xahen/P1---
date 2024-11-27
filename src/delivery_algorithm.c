@@ -26,6 +26,15 @@ void add_node_to_tree(node_t *new_node, node_t *tree_root) {
     }
 }
 
+node_t *find_lowest_f_in_tree(node_t *tree_root) {
+    if (tree_root->left == NULL) {
+        return tree_root;
+    }
+
+    return find_lowest_f_in_tree(tree_root->left);
+}
+
+
 // A* algorithm
 void a_star(graph_t *graph, node_t start_node, node_t end_node) {
     tree_t unvisited_nodes = {&start_node};
