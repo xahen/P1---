@@ -56,15 +56,15 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
     start_node.parent = NULL; // For path reconstruction
 
     while (unvisited_nodes.root != NULL) { // while list is not empty
-        node_t current = find_lowest_f_in_tree(unvisited_nodes);
+        node_t *current = find_lowest_f_in_tree(unvisited_nodes.root);
 
-        if (current.location_x == end_node.location_x && current.location_y == end_node.location_y) {
+        if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
             return reconstruct_path(current); // Takes in current node and finds parent until start node (reconstructs the path)
         }
 
-        add_node_to_tree(current, visited_nodes); // Add current to visited node binary tree
+        remove_node_from_tree(current); // Remove current from unvisited node binary tree
 
-        remove_node_from_tree(current, unvisited_nodes); // Remove current from unvisited node binary tree
+        add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
         if (check_in_tree(current_neighbour, visited_nodes)) { // Check if the current neighbour is in the visited nodes tree
@@ -72,7 +72,7 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
         }
 
         // We use the heuristic function instead of a distance function, since we don't follow real life roads.
-        int tentative_g = current.g + heuristic(current, current_neigbour); // Calculate the tentative_g score
+        double tentative_g = current->g + heuristic(current, current_neigbour); // Calculate the tentative_g score
 
         if (!check_in_tree(current_neighbour, unvisited_nodes)) {
             add_node_to_tree(current_neighbour, unvisited_nodes);
