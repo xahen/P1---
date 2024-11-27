@@ -146,11 +146,15 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
     exit(EXIT_FAILURE);
 }
 
-
+// Function that deletes a specific node in the node BST (Binary Search Tree)
+// First argument is the node that gets deleted.
+// The second argument is the tree that it gets deleted from. (might be unnecessary?)
 void delete_node(node_t *node, tree_t *tree) {
+    // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
 
     if (successor != NULL) {
+        // Set the "deleted" node's values to the successors values.
         node->location_x = successor->location_x;
         node->location_y = successor->location_y;
         node->id = successor->id;
@@ -158,6 +162,7 @@ void delete_node(node_t *node, tree_t *tree) {
         node->h = successor->h;
         node->f = successor->f;
 
+        // Set the parent node of the successor to point to NULL, instead of pointing to the successor.
         if (node->right == successor) {
             if (node->right->right != NULL) {
                 node->right = node->right->right;
@@ -172,6 +177,7 @@ void delete_node(node_t *node, tree_t *tree) {
             node->left = NULL;
         }
 
+        // Delete the successor.
         free(successor);
     } else {
         // TODO: Make this function. Take advantage of check_in_tree();
@@ -181,6 +187,9 @@ void delete_node(node_t *node, tree_t *tree) {
     }
 }
 
+// Function that finds the "successor" of a specific node.
+// The successor is the closest node that is still higher (based in what the list is sorted by).
+// It is found by descending once to the right, then to the left until the end is reached.
 node_t *find_successor(node_t *node) {
     if (node->right == NULL) return NULL;
     node = node->right;
