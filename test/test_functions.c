@@ -16,25 +16,27 @@ TEST_CASE(test_generate_random_package, {
     srand(time(NULL));
 
     for (int i = 0; i < 250; i++) {
-        package_t package = generate_random_package();
+        package_t *package = generate_random_package();
 
-        CHECK_TRUE(package.height > 0 && package.height <= 2);
-        CHECK_TRUE(package.width > 0 && package.width <= 2);
-        CHECK_TRUE(package.length > 0 && package.length <= 2);
-        CHECK_TRUE(package.weight > 0 && package.weight <= 25);
-        CHECK_TRUE(package.priority >= 1 && package.priority <= 5);
-        CHECK_TRUE(package.node_id >= 1 && package.node_id <= 5);
-        CHECK_TRUE(package.truck_id >= 1 && package.truck_id <= 5);
+        CHECK_TRUE(package->height > 0 && package->height <= 2);
+        CHECK_TRUE(package->width > 0 && package->width <= 2);
+        CHECK_TRUE(package->length > 0 && package->length <= 2);
+        CHECK_TRUE(package->weight > 0 && package->weight <= 25);
+        CHECK_TRUE(package->priority >= 1 && package->priority <= 5);
+        CHECK_TRUE(package->node_id >= 1 && package->node_id <= 5);
+        CHECK_TRUE(package->truck_id >= 1 && package->truck_id <= 5);
+        free(package);
     }
 })
 
 TEST_CASE(test_generate_random_node, {
     for (int i = 0; i < 250; i++) {
-        node_t node = generate_random_node();
+        node_t *node = generate_random_node();
 
-        CHECK_TRUE(node.location_x >= 0 && node.location_x < 100);
-        CHECK_TRUE(node.location_y >= 0 && node.location_y < 100);
-        CHECK_TRUE(node.id == 0);
+        CHECK_TRUE(node->location_x >= 0 && node->location_x < 100);
+        CHECK_TRUE(node->location_y >= 0 && node->location_y < 100);
+        CHECK_TRUE(node->id == 0);
+        free(node);
     }
 })
 
@@ -45,18 +47,21 @@ TEST_CASE(test_generate_random_graph, {
         CHECK_TRUE(graph->nodes < 27);
         CHECK_TRUE(graph->nodes > 3);
         CHECK_TRUE(graph->adj_matrix != NULL);
+        free_matrix(graph);
+        free(graph);
     }
 })
 
 TEST_CASE(test_create_truck, {
     int truck_id = 1;
 
-    truck_t truck = create_truck(truck_id);
+    truck_t *truck = create_truck(truck_id);
 
-    CHECK_TRUE(truck.id == truck_id);
-    CHECK_TRUE(truck.max_weight == 3500);
-    CHECK_TRUE(truck.average_speed == 60);
-    CHECK_TRUE(truck.max_volume == 19);
+    CHECK_TRUE(truck->id == truck_id);
+    CHECK_TRUE(truck->max_weight == 3500);
+    CHECK_TRUE(truck->average_speed == 60);
+    CHECK_TRUE(truck->max_volume == 19);
+    free(truck);
 })
 
 TEST_CASE(test_create_package, {
@@ -68,15 +73,16 @@ TEST_CASE(test_create_package, {
     int length = 6;
     int weight = 7;
 
-    package_t package = create_package(package_priority, node_id, truck_id, height, width, length, weight);
+    package_t *package = create_package(package_priority, node_id, truck_id, height, width, length, weight);
 
-    CHECK_TRUE(package.priority == package_priority);
-    CHECK_TRUE(package.node_id == node_id);
-    CHECK_TRUE(package.truck_id == truck_id);
-    CHECK_TRUE(package.height == height);
-    CHECK_TRUE(package.width == width);
-    CHECK_TRUE(package.length == length);
-    CHECK_TRUE(package.weight == weight);
+    CHECK_TRUE(package->priority == package_priority);
+    CHECK_TRUE(package->node_id == node_id);
+    CHECK_TRUE(package->truck_id == truck_id);
+    CHECK_TRUE(package->height == height);
+    CHECK_TRUE(package->width == width);
+    CHECK_TRUE(package->length == length);
+    CHECK_TRUE(package->weight == weight);
+    free(package);
 })
 
 TEST_CASE(test_create_node, {
@@ -84,22 +90,23 @@ TEST_CASE(test_create_node, {
     int location_y = 2;
     int id = 3;
 
-    node_t node = create_node(location_x, location_y, id);
+    node_t *node = create_node(location_x, location_y, id);
 
-    CHECK_TRUE(node.location_x == location_x);
-    CHECK_TRUE(node.location_y == location_y);
-    CHECK_TRUE(node.id == id);
+    CHECK_TRUE(node->location_x == location_x);
+    CHECK_TRUE(node->location_y == location_y);
+    CHECK_TRUE(node->id == id);
 
     // Check if packages are initialized
     for (int i = 0; i < 30; i++) {
-        CHECK_TRUE(node.packages[i].priority == -1);
-        CHECK_TRUE(node.packages[i].node_id == -1);
-        CHECK_TRUE(node.packages[i].truck_id == -1);
-        CHECK_TRUE(node.packages[i].height == 0);
-        CHECK_TRUE(node.packages[i].width == 0);
-        CHECK_TRUE(node.packages[i].length == 0);
-        CHECK_TRUE(node.packages[i].weight == 0);
+        CHECK_TRUE(node->packages[i].priority == -1);
+        CHECK_TRUE(node->packages[i].node_id == -1);
+        CHECK_TRUE(node->packages[i].truck_id == -1);
+        CHECK_TRUE(node->packages[i].height == 0);
+        CHECK_TRUE(node->packages[i].width == 0);
+        CHECK_TRUE(node->packages[i].length == 0);
+        CHECK_TRUE(node->packages[i].weight == 0);
     }
+    free(node);
 })
 
 TEST_CASE(test_create_graph, {
@@ -129,14 +136,15 @@ TEST_CASE(test_get_delivery_status, {
 //
 
 TEST_CASE(test_calculate_trucks, {
-    package_t package = create_package(1, 1, 1, 2, 2, 2, 5);
+    package_t *package = create_package(1, 1, 1, 2, 2, 2, 5);
     double volume_filled = 0;
     double weight_filled = 0;
     int trucks_needed = 0;
 
     for (int i = 0; i < 20; i++) {
-        calculate_trucks(package, &volume_filled, &weight_filled, &trucks_needed);
+        calculate_trucks(*package, &volume_filled, &weight_filled, &trucks_needed);
     }
+    free(package);
 
     CHECK_EQ_INT(trucks_needed, 9);
 })
@@ -183,6 +191,7 @@ TEST_CASE(test_free_matrix, {
     free_matrix(graph);
 
     CHECK_TRUE(graph->adj_matrix == NULL);
+    free(graph);
 })
 
 //
