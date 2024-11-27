@@ -18,6 +18,7 @@ int main(void) {
 
     display_matrix(graph);
     display_matrix(graph2);
+    display_predecessor_matrix(graph2);
     free_matrix(graph);
     free_matrix(graph2);
     return 0;

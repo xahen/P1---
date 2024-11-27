@@ -59,7 +59,8 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
         node_t *current = find_lowest_f_in_tree(unvisited_nodes.root);
 
         if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
-            return reconstruct_path(current); // Takes in current node and finds parent until start node (reconstructs the path)
+            reconstruct_path(current); // Takes in current node and finds parent until start node (reconstructs the path)
+            return;
         }
 
         remove_node_from_tree(current, &unvisited_nodes); // Remove current from unvisited node binary tree
