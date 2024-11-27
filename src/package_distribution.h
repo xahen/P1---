@@ -45,6 +45,12 @@ typedef struct {
 } graph_t;
 
 typedef struct {
+    graph_t *predecessor_matrix;
+    graph_t *optimized_matrix;
+
+} a_star_matrix_t;
+
+typedef struct {
     node_t *root;
 } tree_t;
 

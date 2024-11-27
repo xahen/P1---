@@ -66,3 +66,8 @@ void free_matrix(graph_t *graph) {
     free(graph->adj_matrix);
     graph->adj_matrix = NULL;
 }
+
+void free_a_star_matrix(a_star_matrix_t *matrix) {
+    free_matrix(matrix->predecessor_matrix);
+    free_matrix(matrix->optimized_matrix);
+}
