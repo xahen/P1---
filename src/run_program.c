@@ -12,8 +12,9 @@ int main(void) {
     graph_t *graph = generate_random_graph();
     graph_t *graph2 = create_graph(4);
 
-    add_edge(graph2, 0, 1, 4);
-    add_edge(graph2, 1, 2, 5);
+    add_edge(graph2, 0, 1, 5);
+    add_edge(graph2, 0, 2, 2);
+    add_edge(graph2, 1, 2, 2);
     add_edge(graph2, 2, 3, 9);
 
     display_matrix(graph);

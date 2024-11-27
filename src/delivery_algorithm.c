@@ -16,7 +16,6 @@ void add_node_to_tree(node_t *new_node, node_t *tree_root) {
         } else {
             add_node_to_tree(new_node, tree_root->left);
         }
-        return;
     }
     if (new_node->f >= tree_root->f) {
         if (tree_root->right == NULL) {
@@ -28,11 +27,41 @@ void add_node_to_tree(node_t *new_node, node_t *tree_root) {
 }
 
 node_t *find_lowest_f_in_tree(node_t *tree_root) {
+    if (tree_root == NULL) {
+        printf("The tree is empty\n");
+        exit(EXIT_FAILURE);
+    }
+
     if (tree_root->left == NULL) {
         return tree_root;
     }
 
     return find_lowest_f_in_tree(tree_root->left);
+}
+
+int check_in_tree(node_t node, node_t *tree_root) {
+    if (tree_root == NULL) {
+        return 0;
+    }
+
+    if (node.f < tree_root->f) {
+        if (tree_root->left == NULL) {
+            return 0;
+        }
+        return check_in_tree(node, tree_root->left);
+    }
+
+    if (node.f >= tree_root->f && &node != tree_root) {
+        if (tree_root->right == NULL) {
+            return 0;
+        }
+        return check_in_tree(node, tree_root->right);
+    }
+
+    if (&node == tree_root) {
+        return 1;
+    }
+    return 0;
 }
 
 // Heuristic function - calculates distance as a direct line between two nodes
@@ -68,7 +97,7 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
         add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
-        if (check_in_tree(current_neighbour, visited_nodes)) { // Check if the current neighbour is in the visited nodes tree
+        if (check_in_tree(*current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
             continue;
         }
 
