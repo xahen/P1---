@@ -9,3 +9,9 @@ void reconstruct_path_rec(node_t *node_parent, int *list, int *count);
 double heuristic(node_t current_node, node_t current_node_neighbour);
 
 a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node);
+
+node_t *create_node(int id);
+void delete_node(node_t *node, tree_t *root);
+node_t *find_successor(node_t *node);
+node_t *find_parent(node_t *node, tree_t *root);
+void print_list_ordered(node_t *node);
