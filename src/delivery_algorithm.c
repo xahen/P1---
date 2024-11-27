@@ -62,7 +62,7 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
             return reconstruct_path(current); // Takes in current node and finds parent until start node (reconstructs the path)
         }
 
-        remove_node_from_tree(current); // Remove current from unvisited node binary tree
+        remove_node_from_tree(current, &unvisited_nodes); // Remove current from unvisited node binary tree
 
         add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
 
