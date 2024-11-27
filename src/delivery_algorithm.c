@@ -146,38 +146,6 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
     exit(EXIT_FAILURE);
 }
 
-// "linked_list_main" contains everything for testing/using the related functions
-void linked_list_main() {
-    tree_t tree = {NULL};
-    tree.root->left = create_node(5);
-    tree.root->right = create_node(15);
-    tree.root->left->left = create_node(3);
-    tree.root->left->right = create_node(8);
-    tree.root->right->left = create_node(12);
-    tree.root->right->right = create_node(18);
-
-    print_list_ordered(tree.root);
-    printf("\n\n");
-    delete_node(tree.root->right->right, &tree);
-    print_list_ordered(tree.root);
-
-    free(tree.root->right->right);
-    free(tree.root->right->left);
-    free(tree.root->left->right);
-    free(tree.root->left->left);
-    free(tree.root->right);
-    free(tree.root->left);
-    free(tree.root);
-}
-
-node_t *create_node(int id) {
-    node_t *node = (node_t*)malloc(sizeof(node_t));
-    node->left = node->right = NULL;
-    node->location_x = rand() % 100 + 1;
-    node->location_y = rand() % 100 + 1;
-    node->id = id;
-    return node;
-}
 
 void delete_node(node_t *node, tree_t *tree) {
     node_t *successor = find_successor(node);
@@ -186,9 +154,16 @@ void delete_node(node_t *node, tree_t *tree) {
         node->location_x = successor->location_x;
         node->location_y = successor->location_y;
         node->id = successor->id;
+        node->g = successor->g;
+        node->h = successor->h;
+        node->f = successor->f;
 
         if (node->right == successor) {
-            node->right = NULL;
+            if (node->right->right != NULL) {
+                node->right = node->right->right;
+            } else {
+                node->right = NULL;
+            }
         } else {
             node = node->right;
             while (node->left != successor) {
@@ -199,6 +174,7 @@ void delete_node(node_t *node, tree_t *tree) {
 
         free(successor);
     } else {
+        // TODO: Make this function. Take advantage of check_in_tree();
         node_t *parent = find_parent(node, tree);
 
         free(node);
@@ -213,18 +189,4 @@ node_t *find_successor(node_t *node) {
     }
 
     return node;
-}
-
-node_t *find_parent(node_t *node, tree_t *tree) {
-    if (node == tree->root) {
-
-    }
-}
-
-void print_list_ordered(node_t *node) {
-    if (node != NULL) {
-        print_list_ordered(node->left);
-        printf("x: %d y: %d ID: %d \n", node->location_x, node->location_y, node->id);
-        print_list_ordered(node->right);
-    }
 }
