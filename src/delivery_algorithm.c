@@ -35,7 +35,6 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
     start_node.h = heuristic(start_node, end_node);       // estimated cost from current to the goal
     start_node.f = start_node.g + start_node.h; // Total estimated cost
     start_node.parent = NULL; // For path reconstruction
-    // CHANGE NODE STRUCT
 
     while (unvisited_nodes.root != NULL) { // while list is not empty
         node_t current = find_lowest_f_in_tree(unvisited_nodes);
@@ -53,7 +52,8 @@ void a_star(graph_t *graph, node_t start_node, node_t end_node) {
             continue;
         }
 
-        int tentative_g = current.g + distance(current, current_neigbour); // Calculate the tentative_g score
+        // We use the heuristic function instead of a distance function, since we don't follow real life roads.
+        int tentative_g = current.g + heuristic(current, current_neigbour); // Calculate the tentative_g score
 
         if (!check_in_tree(current_neighbour, unvisited_nodes)) {
             add_node_to_tree(current_neighbour, unvisited_nodes);
