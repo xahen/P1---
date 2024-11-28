@@ -42,6 +42,7 @@ typedef struct {
 typedef struct {
     int nodes;
     int **adj_matrix;
+    node_t **node_addresses;
 } graph_t;
 
 typedef struct {

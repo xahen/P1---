@@ -85,18 +85,23 @@ void reconstruct_path_rec(node_t *node_parent, int *list, int *count) {
 
 // Heuristic function - calculates distance as a direct line between two nodes
 double heuristic(node_t current_node, node_t current_node_neighbour) {
-    double calc_current_node = pow(current_node.location_x - current_node.location_y, 2);
-    double calc_current_neighbour_node = pow(current_node_neighbour.location_x - current_node_neighbour.location_y, 2);
+    double calc_x = pow(current_node.location_x - current_node_neighbour.location_x, 2);
+    double calc_y = pow(current_node.location_y - current_node_neighbour.location_y, 2);
 
-    double sum = calc_current_node + calc_current_neighbour_node;
+    double sum = calc_x + calc_y;
     double distance = sqrt(sum);
     return distance;
 }
 
 // A* algorithm
+// TODO: Give an a_star_matrix_t pointer as argument instead of returning a struct.
+//  Makes the function able to edit the same predecessor matrix and optimized matrix for multiple runs.
+//  This would also make the a_star function return void.
 a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
     tree_t unvisited_nodes = {&start_node};
     tree_t visited_nodes = {NULL};
+
+    // This needs to be changed (Refer to comment on top of function)
     a_star_matrix_t a_star_result = {
         create_graph(graph->nodes),
         create_graph(graph->nodes)
@@ -143,7 +148,7 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
             node_t *current_neighbour = create_node(0, 0, graph->adj_matrix[current->id][i]);
 
             // Check if the created node is even a neighbour.
-            if (graph->adj_matrix[current->id][i] > 0) {
+            if (graph->adj_matrix[current->id][i] == 0) {
                 free(current_neighbour);
                 continue;
             }
@@ -152,10 +157,6 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
             if (check_in_tree(*current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
                 continue;
             }
-
-        // We use the heuristic function instead of a distance function, since we don't follow real life roads.
-        double tentative_g = current->g + heuristic(current, current_neighbour); // Calculate the tentative_g score
-
 
             // We use the heuristic function instead of a distance function, since we don't follow real life roads.
             double tentative_g = current->g + heuristic(*current, *current_neighbour); // Calculate the tentative_g score

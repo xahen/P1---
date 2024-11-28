@@ -53,5 +53,7 @@ graph_t *create_graph(int nodes_amount) {
         graph->adj_matrix[i] = (int*)calloc(nodes_amount, sizeof(int));
     }
 
+    graph->node_addresses = (node_t**)malloc(nodes_amount * sizeof(node_t));
+
     return graph;
 }
