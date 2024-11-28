@@ -153,6 +153,10 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
                 continue;
             }
 
+        // We use the heuristic function instead of a distance function, since we don't follow real life roads.
+        double tentative_g = current->g + heuristic(current, current_neighbour); // Calculate the tentative_g score
+
+
             // We use the heuristic function instead of a distance function, since we don't follow real life roads.
             double tentative_g = current->g + heuristic(*current, *current_neighbour); // Calculate the tentative_g score
 
@@ -178,6 +182,7 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
 // First argument is the node that gets deleted.
 // The second argument is the tree that it gets deleted from. (might be unnecessary?)
 void remove_node_from_tree(node_t *node, tree_t *tree) {
+
     // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
 
@@ -208,9 +213,17 @@ void remove_node_from_tree(node_t *node, tree_t *tree) {
         // Delete the successor.
         free(successor);
     } else {
-        // TODO: Make this function. Take advantage of check_in_tree();
+        // Use the find_parent() function to find the parent to the deleted node, you can now set a null pointer for it.
         node_t *parent = find_parent(node, tree);
 
+        // find_parent() returns NULL if the root node was given as its argument.
+        if (parent != NULL) {
+            // Set the pointer for the deleted node to NULL.
+            if (parent->right == node) parent->right = NULL;
+            else parent->left = NULL;
+        }
+
+        // Delete the node.
         free(node);
     }
 }
@@ -226,4 +239,23 @@ node_t *find_successor(node_t *node) {
     }
 
     return node;
+}
+
+// Function that finds the "parent" of a specific node.
+// The parent is the node immediately before a node.
+// It is found by going from the root, then using the nodes 'f' value to navigate the tree until the parent is reached.
+node_t *find_parent(node_t *node, tree_t *tree) {
+    node_t *parent = tree->root;
+
+    if (node == parent) return NULL;
+
+    while (parent->right != node && parent->left != node) {
+        if (node->f < parent->f) {
+            parent = parent->left;
+        } else {
+            parent = parent->right;
+        }
+    }
+
+    return parent;
 }
