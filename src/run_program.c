@@ -25,21 +25,25 @@ int main(void) {
 
     graph2->node_addresses[0] = create_node(0, 0, 1);
     graph2->node_addresses[1] = create_node(10, 20, 2);
-    graph2->node_addresses[2] = create_node(20, 30, 3);
+    graph2->node_addresses[2] = create_node(15, 15, 3);
     graph2->node_addresses[3] = create_node(5, 10, 4);
 
     for (int i = 0; i < 4; i++) {
         printf("Node address: %d\n", graph2->node_addresses[i]->id);
     }
 
-
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         add_edge(
         graph2,
-        graph2->node_addresses[0]->id-1,
         graph2->node_addresses[i]->id-1,
-        ceil(heuristic(*graph2->node_addresses[0], *graph2->node_addresses[i])));
+        graph2->node_addresses[i+1]->id-1,
+        ceil(heuristic(*graph2->node_addresses[i], *graph2->node_addresses[i+1])));
     }
+    add_edge(
+        graph2,
+        graph2->node_addresses[0]->id-1,
+        graph2->node_addresses[2]->id-1,
+        ceil(heuristic(*graph2->node_addresses[0], *graph2->node_addresses[2])));
 
     display_matrix(graph);
     display_matrix(graph2);
