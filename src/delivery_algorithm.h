@@ -12,3 +12,4 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node);
 
 void delete_node(node_t *node, tree_t *root);
 node_t *find_successor(node_t *node);
+node_t *find_parent(node_t *node, tree_t *tree);
