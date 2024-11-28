@@ -21,16 +21,3 @@ void calculate_trucks(package_t package, double *volume_filled, double *weight_f
         *truck_amount += 1;
     }
 }
-
-void truck_test(int orders) {
-    double volume_filled = 0;
-    double weight_filled = 0;
-    int truck_amount = 0;
-
-    for (int i = 0; i < orders; i++) {
-        package_t package = generate_random_package();
-        calculate_trucks(package, &volume_filled, &weight_filled, &truck_amount);
-    }
-
-    printf("%d\n", truck_amount);
-}

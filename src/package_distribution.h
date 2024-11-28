@@ -18,11 +18,18 @@ typedef struct {
     delivery_status_e delivery_status; // NOT_DELIVERED
 } package_t;
 
-typedef struct {
+typedef struct node_t {
     int location_x;
     int location_y;
     int id;
     package_t packages[30];
+    //Variables for A* algorithm;
+    struct node_t* parent;
+    double g;
+    double h;
+    double f;
+    struct node_t* left;
+    struct node_t* right;
 } node_t;
 
 typedef struct {
@@ -37,10 +44,21 @@ typedef struct {
     int **adj_matrix;
 } graph_t;
 
-truck_t create_truck(int id);
+typedef struct {
+    graph_t *predecessor_matrix;
+    graph_t *optimized_matrix;
 
-package_t create_package(int priority, int node_id, int truck_id, double height, double width, double length, double weight);
+} a_star_matrix_t;
 
-node_t create_node(int location_x, int location_y, int id);
+typedef struct {
+    node_t *root;
+} tree_t;
+
+
+truck_t *create_truck(int id);
+
+package_t *create_package(int priority, int node_id, int truck_id, double height, double width, double length, double weight);
+
+node_t *create_node(int location_x, int location_y, int id);
 
 graph_t *create_graph(int nodes_amount);
