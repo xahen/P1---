@@ -9,18 +9,9 @@
 
 #include <math.h>
 
-double heuristic(node_t current_node, node_t current_node_neighbour) {
-    double calc_x = pow(current_node.location_x - current_node_neighbour.location_x, 2);
-    double calc_y = pow(current_node.location_y - current_node_neighbour.location_y, 2);
-
-    double sum = calc_x + calc_y;
-    double distance = sqrt(sum);
-    return distance;
-}
-
 int main(void) {
     srand(time(NULL));
-    graph_t *graph = generate_random_graph();
+    //graph_t *graph = generate_random_graph();
     graph_t *graph2 = create_graph(4);
 
     graph2->node_addresses[0] = create_node(0, 0, 1);
@@ -28,9 +19,9 @@ int main(void) {
     graph2->node_addresses[2] = create_node(15, 15, 3);
     graph2->node_addresses[3] = create_node(5, 10, 4);
 
-    for (int i = 0; i < 4; i++) {
-        printf("Node address: %d\n", graph2->node_addresses[i]->id);
-    }
+    //for (int i = 0; i < 4; i++) {
+    //    printf("Node address: %d\n", graph2->node_addresses[i]->id);
+    //}
 
     for (int i = 0; i < 3; i++) {
         add_edge(
@@ -45,12 +36,22 @@ int main(void) {
         graph2->node_addresses[2]->id-1,
         ceil(heuristic(*graph2->node_addresses[0], *graph2->node_addresses[2])));
 
-    display_matrix(graph);
+    //display_matrix(graph);
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph2->nodes),
+        create_graph(graph2->nodes)
+    };
+
     display_matrix(graph2);
+
+    a_star(graph2, &a_star_matrix, *graph2->node_addresses[0], *graph2->node_addresses[graph2->nodes - 1]);
+
+    display_matrix(a_star_matrix.optimized_matrix);
+
     display_predecessor_matrix(graph2);
-    free_matrix(graph);
+    //free_matrix(graph);
     free_matrix(graph2);
-    free(graph);
+    //free(graph);
     free(graph2);
     return 0;
 }

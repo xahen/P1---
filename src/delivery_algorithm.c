@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "delivery_algorithm.h"
+#include "create_routes.h"
 
 // Binary tree
 void add_node_to_tree(node_t *new_node, node_t *tree_root) {
@@ -39,26 +40,26 @@ node_t *find_lowest_f_in_tree(node_t *tree_root) {
     return find_lowest_f_in_tree(tree_root->left);
 }
 
-int check_in_tree(node_t node, node_t *tree_root) {
+int check_in_tree(node_t *node, node_t *tree_root) {
     if (tree_root == NULL) {
         return 0;
     }
 
-    if (node.f < tree_root->f) {
+    if (node->f < tree_root->f) {
         if (tree_root->left == NULL) {
             return 0;
         }
         return check_in_tree(node, tree_root->left);
     }
 
-    if (node.f >= tree_root->f && &node != tree_root) {
+    if (node->f >= tree_root->f && node != tree_root) {
         if (tree_root->right == NULL) {
             return 0;
         }
         return check_in_tree(node, tree_root->right);
     }
 
-    if (&node == tree_root) {
+    if (node == tree_root) {
         return 1;
     }
     return 0;
@@ -97,7 +98,7 @@ double heuristic(node_t current_node, node_t current_node_neighbour) {
 // TODO: Give an a_star_matrix_t pointer as argument instead of returning a struct.
 //  Makes the function able to edit the same predecessor matrix and optimized matrix for multiple runs.
 //  This would also make the a_star function return void.
-a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
+void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, node_t end_node) {
     tree_t unvisited_nodes = {&start_node};
     tree_t visited_nodes = {NULL};
 
@@ -117,8 +118,16 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
 
         if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
             int *path = reconstruct_path(current, graph->nodes); // Takes in current node and finds parent until start node (reconstructs the path)
+            // This for loop goes through all the nodes between start_node and end_node and updates the optimized_matrix with better g values.
+            for (int i = 0; i < graph->nodes; i++) {
+                node_t *current_node = graph->node_addresses[i];
+                if (current_node->g < graph->adj_matrix[start_node.id - 1][i]) {
+                    add_edge(a_star_matrix->optimized_matrix, start_node.id - 1, current_node->id - 1, current_node->g);
+                }
+            }
+            // TODO: ADD EDGES TO THE A_STAR_MATRIX POINTER ARGUMENT
             // TODO add edges to a_star matrixes!!
-            return &a_star_result;
+            return;
         }
 
         remove_node_from_tree(current, &unvisited_nodes); // Remove current from unvisited node binary tree
@@ -145,16 +154,15 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
             //   A B
             // A 0 1
 
-            node_t *current_neighbour = create_node(0, 0, graph->adj_matrix[current->id][i]);
+            node_t *current_neighbour = graph->node_addresses[i];
 
-            // Check if the created node is even a neighbour.
-            if (graph->adj_matrix[current->id][i] == 0) {
-                free(current_neighbour);
+            // Check if the next index in the array node_addresses
+            if (graph->adj_matrix[current_neighbour->id - 1][i] == 0) {
                 continue;
             }
 
              // You should be able to find all neighbours with this.
-            if (check_in_tree(*current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
+            if (check_in_tree(current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
                 continue;
             }
 
