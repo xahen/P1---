@@ -135,7 +135,7 @@ void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, n
         add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
-        for (int i = current->id; i < graph->nodes; ++i) {
+        for (int i = current->id - 1; i < graph->nodes; ++i) {
             //TODO: Make this work by getting a node_t struct from the graph.
             // Get the right location somehow.
             // -
