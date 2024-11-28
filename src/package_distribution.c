@@ -39,6 +39,13 @@ node_t *create_node(int location_x, int location_y, int id) {
         node->packages[i] = *create_package(-1, -1, -1, 0, 0, 0, 0);
     }
 
+    node->parent = NULL;
+    node->left = NULL;
+    node->right = NULL;
+    node->f = 0;
+    node->g = 0;
+    node->h = 0;
+
     return node;
 }
 

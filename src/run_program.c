@@ -48,10 +48,10 @@ int main(void) {
 
     display_matrix(a_star_matrix.optimized_matrix);
 
-    display_predecessor_matrix(graph2);
+    display_predecessor_matrix(a_star_matrix.predecessor_matrix);
     //free_matrix(graph);
     free_matrix(graph2);
     //free(graph);
-    free(graph2);
+    //free(graph2);
     return 0;
 }

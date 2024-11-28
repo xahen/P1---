@@ -6,23 +6,27 @@
 #include "create_routes.h"
 
 // Binary tree
-void add_node_to_tree(node_t *new_node, node_t *tree_root) {
-    if (tree_root == NULL) {
-        tree_root = new_node;
+void add_node_to_tree(node_t *new_node, tree_t *tree) {
+    if (tree->root == NULL) {
+        tree->root = new_node;
         return;
     }
-    if (new_node->f < tree_root->f) {
-        if (tree_root->left == NULL) {
-            tree_root->left = new_node;
+    add_node_to_tree_rec(new_node, tree->root);
+}
+
+void add_node_to_tree_rec(node_t *new_node, node_t *tree_node) {
+    if (new_node->f < tree_node->f) {
+        if (tree_node->left == NULL) {
+            tree_node->left = new_node;
         } else {
-            add_node_to_tree(new_node, tree_root->left);
+            add_node_to_tree_rec(new_node, tree_node->left);
         }
     }
-    if (new_node->f >= tree_root->f) {
-        if (tree_root->right == NULL) {
-            tree_root->right = new_node;
+    if (new_node->f >= tree_node->f) {
+        if (tree_node->right == NULL) {
+            tree_node->right = new_node;
         } else {
-            add_node_to_tree(new_node, tree_root->right);
+            add_node_to_tree_rec(new_node, tree_node->right);
         }
     }
 }
@@ -98,15 +102,9 @@ double heuristic(node_t current_node, node_t current_node_neighbour) {
 // TODO: Give an a_star_matrix_t pointer as argument instead of returning a struct.
 //  Makes the function able to edit the same predecessor matrix and optimized matrix for multiple runs.
 //  This would also make the a_star function return void.
-void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, node_t end_node) {
+void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, node_t end_node) {
     tree_t unvisited_nodes = {&start_node};
     tree_t visited_nodes = {NULL};
-
-    // This needs to be changed (Refer to comment on top of function)
-    a_star_matrix_t a_star_result = {
-        create_graph(graph->nodes),
-        create_graph(graph->nodes)
-    };
 
     start_node.g = 0; // Cost from start to current node
     start_node.h = heuristic(start_node, end_node);       // estimated cost from current to the goal
@@ -117,12 +115,21 @@ void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, n
         node_t *current = find_lowest_f_in_tree(unvisited_nodes.root);
 
         if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
-            int *path = reconstruct_path(current, graph->nodes); // Takes in current node and finds parent until start node (reconstructs the path)
+            // int *path = reconstruct_path(current, graph->nodes); // Takes in current node and finds parent until start node (reconstructs the path)
+
             // This for loop goes through all the nodes between start_node and end_node and updates the optimized_matrix with better g values.
             for (int i = 0; i < graph->nodes; i++) {
                 node_t *current_node = graph->node_addresses[i];
-                if (current_node->g < graph->adj_matrix[start_node.id - 1][i]) {
+
+                if (start_node.id - 1 == current_node->id - 1) {
+                    continue;
+                }
+
+                int current_matrix_value = graph->adj_matrix[start_node.id - 1][current_node->id - 1];
+                if (ceil(current_node->g) < current_matrix_value || current_matrix_value == 0) {
+                    printf("Adding edge\n"); // TODO: REMOVE
                     add_edge(a_star_matrix->optimized_matrix, start_node.id - 1, current_node->id - 1, current_node->g);
+                    display_matrix(a_star_matrix->optimized_matrix); // TODO: REMOVE
                 }
             }
             // TODO: ADD EDGES TO THE A_STAR_MATRIX POINTER ARGUMENT
@@ -132,10 +139,10 @@ void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, n
 
         remove_node_from_tree(current, &unvisited_nodes); // Remove current from unvisited node binary tree
 
-        add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
+        add_node_to_tree(current, &visited_nodes); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
-        for (int i = current->id - 1; i < graph->nodes; ++i) {
+        for (int i = 1; i < graph->nodes; ++i) {
             //TODO: Make this work by getting a node_t struct from the graph.
             // Get the right location somehow.
             // -
@@ -157,7 +164,7 @@ void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, n
             node_t *current_neighbour = graph->node_addresses[i];
 
             // Check if the next index in the array node_addresses
-            if (graph->adj_matrix[current_neighbour->id - 1][i] == 0) {
+            if (graph->adj_matrix[current->id - 1][current_neighbour->id - 1] == 0) {
                 continue;
             }
 
@@ -170,7 +177,7 @@ void a_star(graph_t *graph, a_star_matrix_t* a_star_matrix, node_t start_node, n
             double tentative_g = current->g + heuristic(*current, *current_neighbour); // Calculate the tentative_g score
 
             if (!check_in_tree(current_neighbour, unvisited_nodes.root)) {
-                add_node_to_tree(current_neighbour, unvisited_nodes.root);
+                add_node_to_tree(current_neighbour, &unvisited_nodes);
             } else if (tentative_g >= current_neighbour->g) {
                 continue; // Path is not better
             }
@@ -218,9 +225,6 @@ void remove_node_from_tree(node_t *node, tree_t *tree) {
             }
             node->left = NULL;
         }
-
-        // Delete the successor.
-        free(successor);
     } else {
         // Use the find_parent() function to find the parent to the deleted node, you can now set a null pointer for it.
         node_t *parent = find_parent(node, tree);
@@ -230,10 +234,9 @@ void remove_node_from_tree(node_t *node, tree_t *tree) {
             // Set the pointer for the deleted node to NULL.
             if (parent->right == node) parent->right = NULL;
             else parent->left = NULL;
+        } else {
+            tree->root = NULL;
         }
-
-        // Delete the node.
-        free(node);
     }
 }
 
