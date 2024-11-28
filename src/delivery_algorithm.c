@@ -121,25 +121,57 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
         add_node_to_tree(current, visited_nodes.root); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
-        if (check_in_tree(*current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
-            continue;
-        }
+        for (int i = current->id; i < graph->nodes; ++i) {
+            //TODO: Make this work by getting a node_t struct from the graph.
+            // Get the right location somehow.
+            // -
+            // Also this should not create a new node. It should use existing nodes already entered in the matrix.
+            // Maybe make a binary tree sorted by ID as well?
+            // -
+            // We could just get the g score of the node (Thats the value shown in the matrix), then calculate f and find the node.
+            // But is the node even in a tree yet?
+            // Maybe start off by actually making all of the nodes we put in the matrix.
+            // Then instead of setting the 'g' or 'h' value in the matrix then put in a calculated 'f' score of the matrix??
+            // -
+            // We should probably find a different way to get the node of the place we are located in the matrix.
+            // In this instance we are looking for the node on the top of the x-axis.
+            // So if we go from A to B we are looking for B as that is in the x-axis.
+            // As shown below:
+            //   A B
+            // A 0 1
+
+            node_t *current_neighbour = create_node(0, 0, graph->adj_matrix[current->id][i]);
+
+            // Check if the created node is even a neighbour.
+            if (graph->adj_matrix[current->id][i] > 0) {
+                free(current_neighbour);
+                continue;
+            }
+
+             // You should be able to find all neighbours with this.
+            if (check_in_tree(*current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
+                continue;
+            }
 
         // We use the heuristic function instead of a distance function, since we don't follow real life roads.
         double tentative_g = current->g + heuristic(current, current_neighbour); // Calculate the tentative_g score
 
-        if (!check_in_tree(current_neighbour, unvisited_nodes)) {
-            add_node_to_tree(current_neighbour, unvisited_nodes);
-        } else if (tentative_g >= current_neighbour.g) {
-            continue; // Path is not better
-        }
 
-        // Current neighbour has the best path so far
-        current_neighbour.parent = current;
-        current_neighbour.g = tentative_g;
-        current_neighbour.h = heuristic(current_neighbour, end_node);
-        current_neighbour.f = current_neighbour.g + current_neighbour.h;
-        // TODO ENDS HERE
+            // We use the heuristic function instead of a distance function, since we don't follow real life roads.
+            double tentative_g = current->g + heuristic(*current, *current_neighbour); // Calculate the tentative_g score
+
+            if (!check_in_tree(current_neighbour, unvisited_nodes.root)) {
+                add_node_to_tree(current_neighbour, unvisited_nodes.root);
+            } else if (tentative_g >= current_neighbour->g) {
+                continue; // Path is not better
+            }
+
+            // Current neighbour has the best path so far
+            current_neighbour->parent = current;
+            current_neighbour->g = tentative_g;
+            current_neighbour->h = heuristic(*current_neighbour, end_node);
+            current_neighbour->f = current_neighbour->g + current_neighbour->h;
+        }
     }
 
     printf("No path exists\n");
@@ -148,8 +180,9 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
 
 // Function that deletes a specific node in the node BST (Binary Search Tree)
 // First argument is the node that gets deleted.
-// The second argument is the tree that it gets deleted from.
-void delete_node(node_t *node, tree_t *tree) {
+// The second argument is the tree that it gets deleted from. (might be unnecessary?)
+void remove_node_from_tree(node_t *node, tree_t *tree) {
+
     // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
 
