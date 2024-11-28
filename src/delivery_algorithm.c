@@ -118,22 +118,45 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
             // int *path = reconstruct_path(current, graph->nodes); // Takes in current node and finds parent until start node (reconstructs the path)
 
             // This for loop goes through all the nodes between start_node and end_node and updates the optimized_matrix with better g values.
-            for (int i = 0; i < graph->nodes; i++) {
+            for (int i = start_node.id; i < graph->nodes; i++) {
                 node_t *current_node = graph->node_addresses[i];
 
                 if (start_node.id - 1 == current_node->id - 1) {
+                    // printf("SKIP!\n");
                     continue;
                 }
 
                 int current_matrix_value = graph->adj_matrix[start_node.id - 1][current_node->id - 1];
                 if (ceil(current_node->g) < current_matrix_value || current_matrix_value == 0) {
-                    printf("Adding edge\n"); // TODO: REMOVE
-                    add_edge(a_star_matrix->optimized_matrix, start_node.id - 1, current_node->id - 1, current_node->g);
-                    display_matrix(a_star_matrix->optimized_matrix); // TODO: REMOVE
+                    add_edge(a_star_matrix->optimized_matrix, start_node.id - 1, current_node->id - 1, ceil(current_node->g));
+                    //display_matrix(a_star_matrix->optimized_matrix); // TODO: REMOVE
                 }
             }
             // TODO: ADD EDGES TO THE A_STAR_MATRIX POINTER ARGUMENT
             // TODO add edges to a_star matrixes!!
+
+            // Prepare for next A* run
+            // TODO: Make this a function
+            for (int i = 0; i < graph->nodes; i++) {
+                if(check_in_tree(graph->node_addresses[i], unvisited_nodes.root)) {
+                    remove_node_from_tree(graph->node_addresses[i], &unvisited_nodes);
+                }
+
+                if(check_in_tree(graph->node_addresses[i], visited_nodes.root)) {
+                    remove_node_from_tree(graph->node_addresses[i], &visited_nodes);
+                }
+
+                // TODO: LOOK AT THE ID REASSIGNMENT
+                //  ERRORS OCCUR HERE:
+                graph->node_addresses[i]->id = i + 1;
+                graph->node_addresses[i]->f = 0;
+                graph->node_addresses[i]->g = 0;
+                graph->node_addresses[i]->h = 0;
+                graph->node_addresses[i]->parent = NULL;
+                graph->node_addresses[i]->left = NULL;
+                graph->node_addresses[i]->right = NULL;
+            }
+
             return;
         }
 
@@ -142,7 +165,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
         add_node_to_tree(current, &visited_nodes); // Add current to visited node binary tree
 
         // TODO: Check this for all neighbours to the current node.
-        for (int i = 1; i < graph->nodes; ++i) {
+        for (int i = current->id; i < graph->nodes; ++i) {
             //TODO: Make this work by getting a node_t struct from the graph.
             // Get the right location somehow.
             // -
@@ -184,7 +207,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
 
             // Current neighbour has the best path so far
             current_neighbour->parent = current;
-            current_neighbour->g = tentative_g;
+            current_neighbour->g = ceil(tentative_g);
             current_neighbour->h = heuristic(*current_neighbour, end_node);
             current_neighbour->f = current_neighbour->g + current_neighbour->h;
         }
@@ -210,6 +233,7 @@ void remove_node_from_tree(node_t *node, tree_t *tree) {
         node->g = successor->g;
         node->h = successor->h;
         node->f = successor->f;
+
 
         // Set the parent node of the successor to point to NULL, instead of pointing to the successor.
         if (node->right == successor) {
