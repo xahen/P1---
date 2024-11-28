@@ -126,7 +126,7 @@ a_star_matrix_t *a_star(graph_t *graph, node_t start_node, node_t end_node) {
         }
 
         // We use the heuristic function instead of a distance function, since we don't follow real life roads.
-        double tentative_g = current->g + heuristic(current, current_neigbour); // Calculate the tentative_g score
+        double tentative_g = current->g + heuristic(current, current_neighbour); // Calculate the tentative_g score
 
         if (!check_in_tree(current_neighbour, unvisited_nodes)) {
             add_node_to_tree(current_neighbour, unvisited_nodes);
