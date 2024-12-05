@@ -4,7 +4,7 @@
 
 #include "delivery_sim.h"
 #include "create_routes.h"
-#include "delivery_algorithm.c"
+#include "delivery_algorithm.h"
 
 char* get_delivery_status(delivery_status_e delivery_status) {
     switch (delivery_status) {
@@ -116,7 +116,7 @@ graph_t *generate_random_graph() {
 
     for (int i = 0; i < node_amount; i++) {
         node_t *node = generate_random_node();
-        node->id = i;
+        node->id = i + 1;
         graph->node_addresses[i] = node;
     }
 
@@ -126,11 +126,11 @@ graph_t *generate_random_graph() {
         if (random_node_src == random_node_dst) {
             continue;
         }
-        add_edge(graph, random_node_src, random_node_dst, ceil(heuristic(graph->node_addresses[random_node_src-1], graph->node_addresses[random_node_src-1])));
+        add_edge(graph, random_node_src, random_node_dst, ceil(heuristic(*graph->node_addresses[random_node_src], *graph->node_addresses[random_node_dst])));
     }
 
     for (int i = 0; i < node_amount - 1; i++) {
-        add_edge(graph, i, i + 1, rand() % 26 + 1);
+        add_edge(graph, i, i + 1, ceil(heuristic(*graph->node_addresses[i], *graph->node_addresses[i+1])));
     }
 
     return graph;
