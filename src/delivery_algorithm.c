@@ -221,34 +221,27 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
 // First argument is the node that gets deleted.
 // The second argument is the tree that it gets deleted from. (might be unnecessary?)
 void remove_node_from_tree(node_t *node, tree_t *tree) {
-
     // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
 
     if (successor != NULL) {
-        // Set the "deleted" node's values to the successors values.
-        node->location_x = successor->location_x;
-        node->location_y = successor->location_y;
-        node->id = successor->id;
-        node->g = successor->g;
-        node->h = successor->h;
-        node->f = successor->f;
-
-
-        // Set the parent node of the successor to point to NULL, instead of pointing to the successor.
-        if (node->right == successor) {
-            if (node->right->right != NULL) {
-                node->right = node->right->right;
+        // Set successors left node to the deleted nodes left.
+        successor->left = node->left;
+        node_t *parent = find_parent(node, tree);
+        if (parent != NULL) {
+            if (parent->left == node) {
+                parent->left = node->right;
             } else {
-                node->right = NULL;
+                parent->right = node->right;
             }
         } else {
-            node = node->right;
-            while (node->left != successor) {
-                node = node->left;
-            }
-            node->left = NULL;
+            tree->root = node->right;
         }
+
+        // Reset the deleted node's pointers
+        node->left = NULL;
+        node->parent = NULL;
+        node->right = NULL;
     } else {
         // Use the find_parent() function to find the parent to the deleted node, you can now set a null pointer for it.
         node_t *parent = find_parent(node, tree);

@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "delivery_sim.h"
 #include "create_routes.h"
+#include "delivery_algorithm.c"
 
 char* get_delivery_status(delivery_status_e delivery_status) {
     switch (delivery_status) {
@@ -108,9 +110,15 @@ node_t *generate_random_node() {
 // Should this really create a pointer?
 // The same goes for the create_graph function...
 graph_t *generate_random_graph() {
-    int node_amount = rand() % 23 + 4;
+    int node_amount = rand() % 6 + 4;
 
     graph_t *graph = create_graph(node_amount);
+
+    for (int i = 0; i < node_amount; i++) {
+        node_t *node = generate_random_node();
+        node->id = i;
+        graph->node_addresses[i] = node;
+    }
 
     for (int i = 0; i < node_amount * (node_amount - 2); i++) {
         int random_node_src = rand() % node_amount;
@@ -118,7 +126,7 @@ graph_t *generate_random_graph() {
         if (random_node_src == random_node_dst) {
             continue;
         }
-        add_edge(graph, random_node_src, random_node_dst, rand() % 26 + 1);
+        add_edge(graph, random_node_src, random_node_dst, ceil(heuristic(graph->node_addresses[random_node_src-1], graph->node_addresses[random_node_src-1])));
     }
 
     for (int i = 0; i < node_amount - 1; i++) {
