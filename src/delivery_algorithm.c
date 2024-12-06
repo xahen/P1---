@@ -223,6 +223,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
 void remove_node_from_tree(node_t *node, tree_t *tree) {
     // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
+    // Using the find_parent() function to find the parent of the node we want to delete.
     node_t *parent = find_parent(node, tree);
 
     if (successor != NULL) {
