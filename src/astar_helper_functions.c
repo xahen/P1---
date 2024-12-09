@@ -31,3 +31,18 @@ double heuristic(node_t current_node, node_t current_node_neighbour) {
     double distance = sqrt(sum);
     return distance;
 }
+
+int f_comparison(const void *a, const void *b) {
+    node_t *node_a = (node_t *)a;
+    node_t *node_b = (node_t *)b;
+
+    if (node_a == NULL && node_b == NULL) return 0; // Both are NULL (or NaN), they are equal
+    if (node_a == NULL) return 1;             // NULL (or NaN) comes last
+    if (node_b == NULL) return -1;            // NULL (or NaN) comes last
+
+    // Sort by value (ascending order)
+    if (node_a->f < node_b->f) return -1;
+    if (node_a->f > node_b->f) return 1;
+
+    return 0; // Equal values
+}
