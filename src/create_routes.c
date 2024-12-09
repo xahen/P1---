@@ -25,8 +25,10 @@ void display_matrix(graph_t *graph) {
         printf("%c  ", i + 65);
         printf("\x1b[0m"); // Reset the text color back to white (for the numbers)
         for (int j = 0; j < graph->nodes; j++) {
-            if (graph->adj_matrix[i][j] > 9) {
+            if (graph->adj_matrix[i][j] < 99 && graph->adj_matrix[i][j] > 9) {
                 printf("%d  ", graph->adj_matrix[i][j]);
+            } else if (graph->adj_matrix[i][j] > 99) {
+                printf("%d ", graph->adj_matrix[i][j]);
             } else {
                 printf("%d   ", graph->adj_matrix[i][j]);
             }

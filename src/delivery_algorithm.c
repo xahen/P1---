@@ -68,7 +68,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
                 }*/
 
                 graph->node_addresses[i]->f = DBL_MAX;
-                //graph->node_addresses[i]->g = DBL_MAX;
+                graph->node_addresses[i]->g = DBL_MAX;
                 graph->node_addresses[i]->h = DBL_MAX;
                 graph->node_addresses[i]->parent = NULL;
                 graph->node_addresses[i]->left = NULL;
