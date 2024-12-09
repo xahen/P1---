@@ -26,8 +26,8 @@ int main(void) {
 
 
     display_matrix(a_star_matrix.optimized_matrix);
-
     display_predecessor_matrix(a_star_matrix.predecessor_matrix);
+
     free_matrix(graph);
     free(graph);
     return 0;

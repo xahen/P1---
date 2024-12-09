@@ -4,7 +4,7 @@
 
 #include "delivery_sim.h"
 #include "create_routes.h"
-#include "delivery_algorithm.h"
+#include "astar_helper_functions.h"
 
 char* get_delivery_status(delivery_status_e delivery_status) {
     switch (delivery_status) {
