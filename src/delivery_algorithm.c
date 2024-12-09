@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 
 #include "delivery_algorithm.h"
 #include "create_routes.h"
@@ -20,8 +21,19 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
     start_node.f = start_node.g + start_node.h; // Total estimated cost
     start_node.parent = NULL; // For path reconstruction
 
+    int iterations = 0;
     while (unvisited_nodes.root != NULL) { // while list is not empty
+        iterations++;
+        if (iterations > 1000) {
+            printf("Max iterations reached!");
+            exit(EXIT_FAILURE);
+        }
+
         node_t *current = find_lowest_f_in_tree(unvisited_nodes.root);
+        if (current == NULL) {
+            printf("Current is NULL\n");
+            exit(EXIT_FAILURE);
+        }
 
         if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
             // int *path = reconstruct_path(current, graph->nodes); // Takes in current node and finds parent until start node (reconstructs the path)
@@ -31,14 +43,12 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
                 node_t *current_node = graph->node_addresses[i];
 
                 if (start_node.id - 1 == current_node->id - 1) {
-                    // printf("SKIP!\n");
                     continue;
                 }
 
                 int current_matrix_value = graph->adj_matrix[start_node.id - 1][current_node->id - 1];
-                if (ceil(current_node->g) < current_matrix_value || current_matrix_value == 0) {
+                if (current_node->g < current_matrix_value || current_matrix_value == 0) {
                     add_edge(a_star_matrix->optimized_matrix, start_node.id - 1, current_node->id - 1, ceil(current_node->g));
-                    //display_matrix(a_star_matrix->optimized_matrix); // TODO: REMOVE
                 }
             }
             // TODO: ADD EDGES TO THE A_STAR_MATRIX POINTER ARGUMENT
@@ -46,21 +56,20 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
 
             // Prepare for next A* run
             // TODO: Make this a function
+            unvisited_nodes.root = NULL;
+            visited_nodes.root = NULL;
             for (int i = 0; i < graph->nodes; i++) {
-                if(check_in_tree(graph->node_addresses[i], unvisited_nodes.root)) {
+                /*if(check_in_tree(graph->node_addresses[i], unvisited_nodes.root)) {
                     remove_node_from_tree(graph->node_addresses[i], &unvisited_nodes);
                 }
 
                 if(check_in_tree(graph->node_addresses[i], visited_nodes.root)) {
                     remove_node_from_tree(graph->node_addresses[i], &visited_nodes);
-                }
+                }*/
 
-                // TODO: LOOK AT THE ID REASSIGNMENT
-                //  ERRORS OCCUR HERE:
-                graph->node_addresses[i]->id = i + 1;
-                graph->node_addresses[i]->f = 0;
-                graph->node_addresses[i]->g = 0;
-                graph->node_addresses[i]->h = 0;
+                graph->node_addresses[i]->f = DBL_MAX;
+                //graph->node_addresses[i]->g = DBL_MAX;
+                graph->node_addresses[i]->h = DBL_MAX;
                 graph->node_addresses[i]->parent = NULL;
                 graph->node_addresses[i]->left = NULL;
                 graph->node_addresses[i]->right = NULL;
@@ -94,11 +103,17 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
             // A 0 1
 
             node_t *current_neighbour = graph->node_addresses[i];
+            if (current_neighbour == NULL) {
+                printf("Current neighbour is NULL\n");
+                exit(EXIT_FAILURE);
+            }
 
             // Check if the next index in the array node_addresses
+            // TODO: REMEMBER TO CHECK THIS!
             if (graph->adj_matrix[current->id - 1][current_neighbour->id - 1] == 0) {
                 continue;
             }
+
 
              // You should be able to find all neighbours with this.
             if (check_in_tree(current_neighbour, visited_nodes.root)) { // Check if the current neighbour is in the visited nodes tree
@@ -106,7 +121,11 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
             }
 
             // We use the heuristic function instead of a distance function, since we don't follow real life roads.
-            double tentative_g = current->g + heuristic(*current, *current_neighbour); // Calculate the tentative_g score
+            double tentative_g = current->g + graph->adj_matrix[current->id - 1][current_neighbour->id - 1]; // Calculate the tentative_g score
+
+            /*printf("current->g: %lf\n", current->g);
+            printf("graph->adj_matrix[][]: %d\n", graph->adj_matrix[current->id - 1][current_neighbour->id - 1]);
+            printf("tentative_g: %lf\n", tentative_g);*/
 
             if (!check_in_tree(current_neighbour, unvisited_nodes.root)) {
                 add_node_to_tree(current_neighbour, &unvisited_nodes);
@@ -116,7 +135,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, n
 
             // Current neighbour has the best path so far
             current_neighbour->parent = current;
-            current_neighbour->g = ceil(tentative_g);
+            current_neighbour->g = tentative_g;
             current_neighbour->h = heuristic(*current_neighbour, end_node);
             current_neighbour->f = current_neighbour->g + current_neighbour->h;
         }

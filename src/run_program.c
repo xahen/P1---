@@ -10,7 +10,14 @@
 #include <math.h>
 
 int main(void) {
-    srand(time(NULL));
+    srand(10);
+
+    /*
+     * SEED 4: Stack Overflow error
+     * SEED 6: General errors. Won't even find the right path. Might be an overflow error as well.
+     * SEED 16: Proved
+     */
+
     graph_t *graph = generate_random_graph();
 
     a_star_matrix_t a_star_matrix = {
@@ -20,9 +27,19 @@ int main(void) {
 
     display_matrix(graph);
 
-    for (int i = 0; i < graph->nodes - 1; i++) {
-        a_star(graph, &a_star_matrix, *graph->node_addresses[i], *graph->node_addresses[graph->nodes - 1]);
-    }
+    /*for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, *graph->node_addresses[i], *graph->node_addresses[j]);
+            }
+        }
+    }*/
+
+    a_star(graph, &a_star_matrix, *graph->node_addresses[1], *graph->node_addresses[5]);
+    //a_star(graph, &a_star_matrix, *graph->node_addresses[2], *graph->node_addresses[5]);
+
+
+
 
 
     display_matrix(a_star_matrix.optimized_matrix);

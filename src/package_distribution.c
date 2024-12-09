@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <float.h>
 
 #include "package_distribution.h"
 
@@ -42,9 +43,9 @@ node_t *create_node(int location_x, int location_y, int id) {
     node->parent = NULL;
     node->left = NULL;
     node->right = NULL;
-    node->f = 0;
-    node->g = 0;
-    node->h = 0;
+    node->f = DBL_MAX;
+    node->g = DBL_MAX;
+    node->h = DBL_MAX;
 
     return node;
 }
