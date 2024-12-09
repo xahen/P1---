@@ -10,7 +10,7 @@
 #include <math.h>
 
 int main(void) {
-    srand(10);
+    srand(16);
 
     /*
      * SEED 4: Stack Overflow error
@@ -27,16 +27,13 @@ int main(void) {
 
     display_matrix(graph);
 
-    /*for (int i = 0; i < graph->nodes - 1; i++) {
+    for (int i = 0; i < graph->nodes - 1; i++) {
         for (int j = i + 1; j < graph->nodes; j++) {
             if(graph->adj_matrix[i][j] == 0) {
                 a_star(graph, &a_star_matrix, *graph->node_addresses[i], *graph->node_addresses[j]);
             }
         }
-    }*/
-
-    a_star(graph, &a_star_matrix, *graph->node_addresses[1], *graph->node_addresses[5]);
-    //a_star(graph, &a_star_matrix, *graph->node_addresses[2], *graph->node_addresses[5]);
+    }
 
 
 

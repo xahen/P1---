@@ -81,53 +81,41 @@ int check_in_tree(node_t *node, node_t *tree_root) {
 // First argument is the node that gets deleted.
 // The second argument is the tree that it gets deleted from. (might be unnecessary?)
 void remove_node_from_tree(node_t *node, tree_t *tree) {
-    if (node == NULL) {
-        return; // Nothing to remove if node is null
-    }
-    // Case 1: Node has no children
-    if (node->left == NULL && node->right == NULL) {
-        node_t *parent = find_parent(node, tree);
-        if (parent) {
-            if (parent->left == node) {
-                parent->left = NULL;
-            } else {
-                parent->right = NULL;
-            }
-        } else {
-            tree->root = NULL; // Node is root
-        }
-        free(node);
-        return;
-
-        // Case 2: Node has only one child
-    } else if (node->left == NULL || node->right == NULL) {
-        node_t *child = (node->left != NULL) ? node->left : node->right;
-        node_t *parent = find_parent(node, tree);
-        if (parent) {
-            if (parent->left == node) {
-                parent->left = child;
-            } else {
-                parent->right = child;
-            }
-        } else {
-            tree->root = child; // Root is child
-        }
-        free(node);
-        return;
-    }
-    // Case 3: Node has two children
-    // Replace the node with its in-order successor
+    // Use the find_successor() function to find the node that you will swap into the deleted node's space.
     node_t *successor = find_successor(node);
-    if (successor != NULL) {
-        // Copy successor's values into the current node
-        node->f = successor->f;
-        node->location_x = successor->location_x;
-        node->location_y = successor->location_y;
+    // Using the find_parent() function to find the parent of the node we want to delete.
+    node_t *parent = find_parent(node, tree);
 
-        // Recursively remove the successor node
-        remove_node_from_tree(successor, tree);
+    if (successor != NULL) {
+        // Set successors left node pointer to the deleted node's left pointer.
+        successor->left = node->left;
+
+        if (parent != NULL) {
+            if (parent->left == node) {
+                parent->left = node->right;
+            } else {
+                parent->right = node->right;
+            }
+        } else {
+            tree->root = node->right;
+        }
+
+        // Reset the deleted node's pointers
+        node->left = NULL;
+        node->parent = NULL;
+        node->right = NULL;
+    } else {
+        // find_parent() returns NULL if the root node was given as its argument.
+        if (parent != NULL) {
+            // Set the pointer for the deleted node to NULL.
+            if (parent->right == node) parent->right = NULL;
+            else parent->left = NULL;
+        } else {
+            tree->root = NULL;
+        }
     }
 }
+
 
 
 // Function that finds the "successor" of a specific node.
