@@ -9,42 +9,92 @@
 #include "astar_helper_functions.h"
 
 // A* algorithm
-// TODO: Give an a_star_matrix_t pointer as argument instead of returning a struct.
-//  Makes the function able to edit the same predecessor matrix and optimized matrix for multiple runs.
-//  This would also make the a_star function return void.
-void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t start_node, node_t end_node) {
+void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, node_t *end_node) {
     /*tree_t unvisited_nodes = {&start_node};
     tree_t visited_nodes = {NULL};*/
+
+    // TODO: Try defining lists differently.
     node_t **unvisited_nodes = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
     node_t **visited_nodes = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
 
     // Insert start_node into the unvisited nodes list.
-    unvisited_nodes[0] = &start_node;
+    unvisited_nodes[0] = start_node;
 
-    start_node.g = 0;
-    start_node.h = heuristic(start_node, end_node); // Minimum estimated cost from current node to end node
-    start_node.f = start_node.g + start_node.h; // Total estimated cost
-    start_node.parent = NULL; // For path reconstruction
+    start_node->g = 0;
+    start_node->h = heuristic(*start_node, *end_node); // Minimum estimated cost from current node to end node
+    start_node->f = start_node->g + start_node->h; // Total estimated cost
+    start_node->parent = NULL; // For path reconstruction
 
     while(unvisited_nodes[0] != NULL) {
-        for (int i = 0; i < graph->nodes; i++) {
-            qsort(unvisited_nodes, graph->nodes, sizeof(node_t*), f_comparison);
-        }
-
         node_t *current = unvisited_nodes[0];
         if (current == NULL) {
             printf("Current is NULL\n");
             exit(EXIT_FAILURE);
         }
 
-        if (current->location_x == end_node.location_x && current->location_y == end_node.location_y) {
+        if (current == end_node) {
             // Reconstruct path
 
-            
+            // Add edges to optimized matrix
+            printf("Found a route!\n");
+
+            free(unvisited_nodes);
+            free(visited_nodes);
+            return;
         }
 
+        pop_node(current, unvisited_nodes, graph->nodes);
+
+        push_node(current, visited_nodes, graph->nodes);
+
+        node_t **current_neighbours = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
+
+        for (int i = 0; i < graph->nodes; i++) {
+            if (graph->adj_matrix[current->id - 1][i] != 0) {
+                push_node(graph->node_addresses[i], current_neighbours, graph->nodes);
+            }
+        }
+
+        for (int i = 0; i < graph->nodes; i++) {
+            if (current_neighbours[i] == NULL) {
+                printf("NULL\n");
+            } else {
+                printf("%d\n", current_neighbours[i]->id);
+            }
+        }
+
+        for (int i = 0; i < graph->nodes; i++) {
+            // If we reach the end of the list of neighbours, then break (See push_node function)
+            if (current_neighbours[i] == NULL) break;
+
+            // Check if the current node is in the visited_nodes list
+            if (check_in_list(current_neighbours[i], visited_nodes, graph->nodes)) continue;
+
+            // Set tentative_g score
+            double tentative_g = current->g + heuristic(*current, *current_neighbours[i]);
+
+            // Check if the current neighbour is in the unvisited nodes. Add to unvisited nodes if false
+            if (check_in_list(current_neighbours[i], unvisited_nodes, graph->nodes) == 0) {
+                push_node(current_neighbours[i], unvisited_nodes, graph->nodes);
+            } else if (tentative_g >= current_neighbours[i]->g) {
+                continue; // Path is not better
+            }
+
+            current_neighbours[i]->parent = current;
+            current_neighbours[i]->g = tentative_g;
+            current_neighbours[i]->h = heuristic(*current_neighbours[i], *end_node);
+            current_neighbours[i]->f = current_neighbours[i]->g + current_neighbours[i]->h;
+        }
+        free(current_neighbours);
+
+        for (int i = 0; i < graph->nodes; i++) {
+            qsort(unvisited_nodes, graph->nodes, sizeof(node_t*), f_comparison);
+        }
     }
 
     free(unvisited_nodes);
     free(visited_nodes);
+
+    printf("No route exists!\n");
+    exit(EXIT_FAILURE);
 }

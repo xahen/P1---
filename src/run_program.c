@@ -35,7 +35,7 @@ int main(void) {
         }
     }*/
 
-    a_star(graph, &a_star_matrix, *graph->node_addresses[0], *graph->node_addresses[graph->nodes - 1]);
+    a_star(graph, &a_star_matrix, graph->node_addresses[0], graph->node_addresses[graph->nodes - 1]);
 
 
 

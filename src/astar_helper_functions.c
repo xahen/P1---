@@ -46,3 +46,32 @@ int f_comparison(const void *a, const void *b) {
 
     return 0; // Equal values
 }
+
+void pop_node(node_t *node, node_t **list, int size) {
+    for (int i = 0; i < size; i++) {
+        if (list[i] == node) {
+            list[i] = NULL;
+            return;
+        }
+    }
+    printf("Node not in list!\n");
+    exit(EXIT_FAILURE);
+}
+
+void push_node(node_t *node, node_t **list, int size) {
+    for (int i = 0; i < size; i++) {
+        if (list[i] == NULL) {
+            list[i] = node;
+            return;
+        }
+    }
+    printf("List is full!\n");
+    exit(EXIT_FAILURE);
+}
+
+int check_in_list(node_t *node, node_t **list, int size) {
+    for (int i = 0; i < size; i++) {
+        if (list[i] == node) return 1;
+    }
+    return 0;
+}
