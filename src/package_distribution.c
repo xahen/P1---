@@ -45,7 +45,7 @@ node_t *create_node(int location_x, int location_y, int id) {
     node->right = NULL;
     node->f = DBL_MAX;
     node->g = DBL_MAX;
-    node->h = 0;
+    node->h = DBL_MAX;
 
     return node;
 }
