@@ -10,9 +10,6 @@
 
 // A* algorithm
 void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, node_t *end_node) {
-    /*tree_t unvisited_nodes = {&start_node};
-    tree_t visited_nodes = {NULL};*/
-
     node_t **unvisited_nodes = (node_t**)calloc(graph->nodes, sizeof(node_t*));
     node_t **visited_nodes = (node_t**)calloc(graph->nodes, sizeof(node_t*));
 
@@ -32,10 +29,16 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
         }
 
         if (current == end_node) {
+            //printf("Found a route!\n");
             // Reconstruct path
 
             // Add edges to optimized matrix
-            printf("Found a route!\n");
+
+            int matrix_value = graph->adj_matrix[start_node->id-1][end_node->id-1];
+            if (end_node->g < matrix_value || matrix_value == 0) {
+                add_edge(a_star_matrix->optimized_matrix, start_node->id - 1, end_node->id - 1, end_node->g);
+                add_edge(a_star_matrix->predecessor_matrix, start_node->id - 1, end_node->id - 1, end_node->parent->id);
+            }
 
             free(unvisited_nodes);
             free(visited_nodes);
@@ -54,14 +57,6 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
             }
         }
 
-        /*for (int i = 0; i < graph->nodes; i++) {
-            if (current_neighbours[i] == NULL) {
-                printf("NULL\n");
-            } else {
-                printf("%d\n", current_neighbours[i]->id);
-            }
-        }*/
-
         for (int i = 0; i < graph->nodes; i++) {
             // If we reach the end of the list of neighbours, then break (See push_node function)
             if (current_neighbours[i] == NULL) break;
@@ -70,7 +65,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
             if (check_in_list(current_neighbours[i], visited_nodes, graph->nodes)) continue;
 
             // Set tentative_g score
-            double tentative_g = current->g + heuristic(*current, *current_neighbours[i]);
+            double tentative_g = ceil(current->g + heuristic(*current, *current_neighbours[i]));
 
             // Check if the current neighbour is in the unvisited nodes. Add to unvisited nodes if false
             if (check_in_list(current_neighbours[i], unvisited_nodes, graph->nodes) == 0) {
@@ -81,7 +76,8 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
 
             current_neighbours[i]->parent = current;
             current_neighbours[i]->g = tentative_g;
-            current_neighbours[i]->h = heuristic(*current_neighbours[i], *end_node);
+            //current_neighbours[i]->h = heuristic(*current_neighbours[i], *end_node);
+            current_neighbours[i]->h = 0;
             current_neighbours[i]->f = current_neighbours[i]->g + current_neighbours[i]->h;
         }
         free(current_neighbours);

@@ -24,8 +24,11 @@ void reconstruct_path_rec(node_t *node_parent, int *list, int *count) {
 
 // Heuristic function - calculates distance as a direct line between two nodes
 double heuristic(node_t current_node, node_t current_node_neighbour) {
-    double calc_x = pow(current_node.location_x - current_node_neighbour.location_x, 2);
-    double calc_y = pow(current_node.location_y - current_node_neighbour.location_y, 2);
+    double calc_x = current_node.location_x - current_node_neighbour.location_x;
+    double calc_y = current_node.location_y - current_node_neighbour.location_y;
+
+    calc_x *= calc_x;
+    calc_y *= calc_y;
 
     double sum = calc_x + calc_y;
     double distance = sqrt(sum);

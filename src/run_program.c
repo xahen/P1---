@@ -10,7 +10,9 @@
 #include <math.h>
 
 int main(void) {
-    srand(16);
+    int start_time = time(NULL);
+    srand(time(NULL));
+    //srand(6);
 
     /*
      * SEED 4: Stack Overflow error
@@ -27,22 +29,20 @@ int main(void) {
 
     display_matrix(graph);
 
-    /*for (int i = 0; i < graph->nodes - 1; i++) {
+    for (int i = 0; i < graph->nodes - 1; i++) {
         for (int j = i + 1; j < graph->nodes; j++) {
             if(graph->adj_matrix[i][j] == 0) {
-                a_star(graph, &a_star_matrix, *graph->node_addresses[i], *graph->node_addresses[j]);
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
             }
         }
-    }*/
+    }
 
-    a_star(graph, &a_star_matrix, graph->node_addresses[0], graph->node_addresses[graph->nodes - 1]);
-
-
-
-
-
+    //a_star(graph, &a_star_matrix, graph->node_addresses[0], graph->node_addresses[graph->nodes - 1]);
+    
     display_matrix(a_star_matrix.optimized_matrix);
     display_predecessor_matrix(a_star_matrix.predecessor_matrix);
+
+    printf("Time run: %lf\n", (double)time(NULL) - start_time);
 
     free_matrix(graph);
     free(graph);
