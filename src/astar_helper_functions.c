@@ -33,29 +33,38 @@ double heuristic(node_t current_node, node_t current_node_neighbour) {
 }
 
 int f_comparison(const void *a, const void *b) {
-    node_t *node_a = (node_t *)a;
-    node_t *node_b = (node_t *)b;
+    node_t *node_a = *(node_t**)a;
+    node_t *node_b = *(node_t**)b;
 
-    if (node_a == NULL && node_b == NULL) return 0; // Both are NULL (or NaN), they are equal
+    if (node_a == NULL && node_b == NULL) return 1; // Both are NULL (or NaN), they are equal
     if (node_a == NULL) return 1;             // NULL (or NaN) comes last
     if (node_b == NULL) return -1;            // NULL (or NaN) comes last
 
     // Sort by value (ascending order)
-    if (node_a->f < node_b->f) return -1;
-    if (node_a->f > node_b->f) return 1;
+    if (node_a->f > node_b->f) return -1;
+    if (node_a->f < node_b->f) return 1;
 
     return 0; // Equal values
 }
 
+// Pop a node from a list
 void pop_node(node_t *node, node_t **list, int size) {
+    int index = -1;
     for (int i = 0; i < size; i++) {
         if (list[i] == node) {
-            list[i] = NULL;
-            return;
+            index = i;
+            break;
         }
     }
-    printf("Node not in list!\n");
-    exit(EXIT_FAILURE);
+
+    if (index == -1) return;
+
+    for (int i = index; i < size - 1; i++) {
+        list[i] = list[i + 1];
+    }
+
+    size--;
+    list[size] = NULL;
 }
 
 void push_node(node_t *node, node_t **list, int size) {

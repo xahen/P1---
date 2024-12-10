@@ -13,9 +13,8 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
     /*tree_t unvisited_nodes = {&start_node};
     tree_t visited_nodes = {NULL};*/
 
-    // TODO: Try defining lists differently.
-    node_t **unvisited_nodes = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
-    node_t **visited_nodes = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
+    node_t **unvisited_nodes = (node_t**)calloc(graph->nodes, sizeof(node_t*));
+    node_t **visited_nodes = (node_t**)calloc(graph->nodes, sizeof(node_t*));
 
     // Insert start_node into the unvisited nodes list.
     unvisited_nodes[0] = start_node;
@@ -47,7 +46,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
 
         push_node(current, visited_nodes, graph->nodes);
 
-        node_t **current_neighbours = (node_t**)calloc(graph->nodes, graph->nodes * sizeof(node_t*));
+        node_t **current_neighbours = (node_t**)calloc(graph->nodes, sizeof(node_t*));
 
         for (int i = 0; i < graph->nodes; i++) {
             if (graph->adj_matrix[current->id - 1][i] != 0) {
@@ -55,13 +54,13 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
             }
         }
 
-        for (int i = 0; i < graph->nodes; i++) {
+        /*for (int i = 0; i < graph->nodes; i++) {
             if (current_neighbours[i] == NULL) {
                 printf("NULL\n");
             } else {
                 printf("%d\n", current_neighbours[i]->id);
             }
-        }
+        }*/
 
         for (int i = 0; i < graph->nodes; i++) {
             // If we reach the end of the list of neighbours, then break (See push_node function)
@@ -87,9 +86,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
         }
         free(current_neighbours);
 
-        for (int i = 0; i < graph->nodes; i++) {
-            qsort(unvisited_nodes, graph->nodes, sizeof(node_t*), f_comparison);
-        }
+        qsort(unvisited_nodes, graph->nodes, sizeof(node_t *), f_comparison);
     }
 
     free(unvisited_nodes);
