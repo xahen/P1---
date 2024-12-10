@@ -11,8 +11,9 @@
 
 int main(void) {
     int start_time = time(NULL);
-    srand(time(NULL));
-    //srand(6);
+    //int seed = time(NULL);
+    int seed = 1733838591;
+    srand(seed);
 
     /*
      * SEED 4: Stack Overflow error
@@ -37,12 +38,11 @@ int main(void) {
         }
     }
 
-    //a_star(graph, &a_star_matrix, graph->node_addresses[0], graph->node_addresses[graph->nodes - 1]);
-    
     display_matrix(a_star_matrix.optimized_matrix);
     display_predecessor_matrix(a_star_matrix.predecessor_matrix);
 
-    printf("Time run: %lf\n", (double)time(NULL) - start_time);
+    printf("Time run: %lld\n", time(NULL) - start_time);
+    printf("Seed: %d\n", seed);
 
     free_matrix(graph);
     free(graph);

@@ -29,11 +29,9 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
         }
 
         if (current == end_node) {
-            //printf("Found a route!\n");
             // Reconstruct path
 
             // Add edges to optimized matrix
-
             int matrix_value = graph->adj_matrix[start_node->id-1][end_node->id-1];
             if (end_node->g < matrix_value || matrix_value == 0) {
                 add_edge(a_star_matrix->optimized_matrix, start_node->id - 1, end_node->id - 1, end_node->g);
