@@ -5,6 +5,7 @@
 #include "delivery_algorithm.h"
 #include "create_routes.h"
 #include "astar_helper_functions.h"
+#include "clarke_and_wright_helper_functions.h"
 
 // A* algorithm
 void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, node_t *end_node) {
@@ -86,6 +87,6 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
     exit(EXIT_FAILURE);
 }
 
-void clarke_and_wright() {
+void clarke_and_wright(truck_t *vehicles, int amount_of_vehicles, graph_t *optimized_matrix) {
 
 }

@@ -14,10 +14,11 @@ int main(void) {
     srand(seed);
 
     graph_t *graph = generate_random_graph();
+    graph_t optimized_matrix = *graph;
 
     a_star_matrix_t a_star_matrix = {
         create_graph(graph->nodes),
-        create_graph(graph->nodes)
+        &optimized_matrix
     };
 
     display_matrix(graph);
