@@ -44,8 +44,8 @@ int f_comparison(const void *a, const void *b) {
     if (node_b == NULL) return -1;            // NULL (or NaN) comes last
 
     // Sort by value (ascending order)
-    if (node_a->f > node_b->f) return -1;
-    if (node_a->f < node_b->f) return 1;
+    if (node_a->f > node_b->f) return 1;
+    if (node_a->f < node_b->f) return -1;
 
     return 0; // Equal values
 }
