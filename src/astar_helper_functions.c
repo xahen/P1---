@@ -39,7 +39,7 @@ int f_comparison(const void *a, const void *b) {
     node_t *node_a = *(node_t**)a;
     node_t *node_b = *(node_t**)b;
 
-    if (node_a == NULL && node_b == NULL) return 1; // Both are NULL (or NaN), they are equal
+    if (node_a == NULL && node_b == NULL) return 0; // Both are NULL (or NaN), they are equal
     if (node_a == NULL) return 1;             // NULL (or NaN) comes last
     if (node_b == NULL) return -1;            // NULL (or NaN) comes last
 
