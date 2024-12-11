@@ -78,6 +78,16 @@ node_t **merge_routes(node_t **route_one, node_t **route_two, int size, savings_
         reverse_list(route_two, size);
     }
 
+    int size_of_route_one = size_of_list_without_null(route_one, size);
+    int size_of_route_two = size_of_list_without_null(route_two, size);
+    for (int i = 0; i < size_of_route_one; i++) {
+        list[i] = route_one[i];
+    }
+
+    for (int i = 0; i < size_of_route_two; i++) {
+        list[i + size_of_route_one - 1] = route_two[i];
+    }
+
     return list;
 }
 
