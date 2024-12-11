@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <float.h>
 
 #include "delivery_algorithm.h"
 #include "create_routes.h"
-#include "bst_functions.h"
 #include "astar_helper_functions.h"
 
 // A* algorithm
