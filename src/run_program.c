@@ -7,8 +7,44 @@
 #include "resource_calculation.h"
 #include "create_routes.h"
 
-int main(void) {
-    srand(time(NULL));
+#include <math.h>
 
+int main(void) {
+    int start_time = time(NULL);
+    //int seed = time(NULL);
+    int seed = 1733838591;
+    srand(seed);
+
+    /*
+     * SEED 4: Stack Overflow error
+     * SEED 6: General errors. Won't even find the right path. Might be an overflow error as well.
+     * SEED 16: Proved
+     */
+
+    graph_t *graph = generate_random_graph();
+
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph->nodes),
+        create_graph(graph->nodes)
+    };
+
+    display_matrix(graph);
+
+    for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
+            }
+        }
+    }
+
+    display_matrix(a_star_matrix.optimized_matrix);
+    display_predecessor_matrix(a_star_matrix.predecessor_matrix);
+
+    printf("Time run: %lld\n", time(NULL) - start_time);
+    printf("Seed: %d\n", seed);
+
+    free_matrix(graph);
+    free(graph);
     return 0;
 }
