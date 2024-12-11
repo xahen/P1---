@@ -73,8 +73,7 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
 
             current_neighbours[i]->parent = current;
             current_neighbours[i]->g = tentative_g;
-            //current_neighbours[i]->h = heuristic(*current_neighbours[i], *end_node);
-            current_neighbours[i]->h = 0;
+            current_neighbours[i]->h = heuristic(*current_neighbours[i], *end_node);
             current_neighbours[i]->f = current_neighbours[i]->g + current_neighbours[i]->h;
         }
         free(current_neighbours);

@@ -11,8 +11,8 @@
 
 int main(void) {
     int start_time = time(NULL);
-    //int seed = time(NULL);
-    int seed = 1733838591;
+    int seed = time(NULL);
+    //int seed = 1733927608;
     srand(seed);
 
     /*
@@ -28,7 +28,7 @@ int main(void) {
         create_graph(graph->nodes)
     };
 
-    display_matrix(graph);
+    //display_matrix(graph);
 
     for (int i = 0; i < graph->nodes - 1; i++) {
         for (int j = i + 1; j < graph->nodes; j++) {
@@ -38,8 +38,8 @@ int main(void) {
         }
     }
 
-    display_matrix(a_star_matrix.optimized_matrix);
-    display_predecessor_matrix(a_star_matrix.predecessor_matrix);
+    /*display_matrix(a_star_matrix.optimized_matrix);
+    display_predecessor_matrix(a_star_matrix.predecessor_matrix);*/
 
     printf("Time run: %lld\n", time(NULL) - start_time);
     printf("Seed: %d\n", seed);
