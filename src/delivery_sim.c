@@ -79,7 +79,7 @@ void print_truck(int selector, truck_t truck) {
         }
 }
 
-package_t generate_random_package() {
+package_t *generate_random_package() {
     int priority = rand() % 5 + 1;
     int node_id = rand() % 5 + 1;
     int truck_id = rand() % 5 + 1;
@@ -89,18 +89,18 @@ package_t generate_random_package() {
     double length = (rand() % 200 + 1) / 100.0;
     double weight = (rand() % 2500 + 1) / 100.0;
 
-    package_t package = create_package(priority, node_id, truck_id, height, width, length, weight);
+    package_t *package = create_package(priority, node_id, truck_id, height, width, length, weight);
 
     return package;
 }
 
-node_t generate_random_node() {
+node_t *generate_random_node() {
     int id = 0;
 
     int position_x = rand() % 100;
     int position_y = rand() % 100;
 
-    node_t node = create_node(position_x, position_y, id);
+    node_t *node = create_node(position_x, position_y, id);
 
     return node;
 }
