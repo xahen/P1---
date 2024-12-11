@@ -10,7 +10,7 @@
 int main(void) {
     int start_time = time(NULL);
     int seed = time(NULL);
-    //int seed = 1733927608;
+    //int seed = 1733942317;
     srand(seed);
 
     graph_t *graph = generate_random_graph();
@@ -33,6 +33,8 @@ int main(void) {
 
     display_matrix(a_star_matrix.optimized_matrix);
     display_predecessor_matrix(a_star_matrix.predecessor_matrix);
+
+    clarke_and_wright(create_truck(0), 1, a_star_matrix.optimized_matrix);
 
     printf("Time run: %lld\n", time(NULL) - start_time);
     printf("Seed: %d\n", seed);

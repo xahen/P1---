@@ -29,12 +29,12 @@ savings_t *savings(node_t *distribution_node, graph_t *optimized_matrix) {
 }
 
 int savings_compare(const void *a, const void *b) {
-    savings_t *savings_a = *(savings_t**)a;
-    savings_t *savings_b = *(savings_t**)b;
+    savings_t savings_a = *(savings_t*)a;
+    savings_t savings_b = *(savings_t*)b;
 
     // Sorting in descending order
-    if(savings_a->savings > savings_b->savings) return -1;
-    if(savings_a->savings < savings_b->savings) return 1;
+    if(savings_a.savings > savings_b.savings) return -1;
+    if(savings_a.savings < savings_b.savings) return 1;
 
     // Equal
     return 0;
