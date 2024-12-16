@@ -4,6 +4,34 @@
 #include "clarke_and_wright_helper_functions.h"
 #include "astar_helper_functions.h"
 
+which_route_t which_route(node_t *link, routes_t *routes, int size) {
+    which_route_t return_values = {
+        node_t node_sel[100],
+        int i_route[100],
+        int count_in = 0,
+        int overlap = 0
+    };
+
+    for (int route = 0; route < 100; route++) {
+        for (int node = 0; node < 2; node++) {
+            int index = get_index(link, routes->list[node], size);
+            if (index != -1) {
+                return_values.i_route[return_values.count_in] = route;
+                push_node(link[node], return_values.node_sel, 100);
+                return_values.count_in++;
+            }
+        }
+    }
+
+    if (return_values.i_route[0] == return_values.i_route[1]) {
+        return_values.overlap = 1;
+    } else {
+        return_values.overlap = 0;
+    }
+
+    return return_values;
+}
+
 savings_t *savings(node_t *distribution_node, graph_t *optimized_matrix) {
     int amount_of_pairs = (optimized_matrix->nodes - 1) * (optimized_matrix->nodes - 2) / 2;
     savings_t *savings_list = (savings_t*)calloc(amount_of_pairs, sizeof(savings_t));
@@ -15,7 +43,7 @@ savings_t *savings(node_t *distribution_node, graph_t *optimized_matrix) {
                 savings_value.i = optimized_matrix->node_addresses[i];
                 savings_value.j = optimized_matrix->node_addresses[j];
 
-                int Coi = optimized_matrix->adj_matrix[distribution_node->id-1][i];
+                int Coi = optimized_matrix->adj_matrix[distribution_node->id - 1][i];
                 int Coj = optimized_matrix->adj_matrix[distribution_node->id - 1][j];
                 int Cij = optimized_matrix->adj_matrix[i][j];
                 savings_value.savings = Coi + Coj - Cij;

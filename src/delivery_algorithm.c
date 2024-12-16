@@ -88,10 +88,38 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
 }
 
 void clarke_and_wright(truck_t *vehicles, int amount_of_vehicles, graph_t *optimized_matrix) {
+    routes_t **routes = (routes_t**)calloc(100, sizeof(routes_t*));
+
+    int remaining = 1;
+
+    int cap = 20;
+
+    int step = 0;
+
     savings_t *save = savings(optimized_matrix->node_addresses[0], optimized_matrix);
 
     for (int i = 0; i < (optimized_matrix->nodes - 1) * (optimized_matrix->nodes - 2) / 2; i++) {
-        printf("%d\t%d\t%d\n", save[i].i->id, save[i].j->id, save[i].savings);
+        step++;
+        if (remaining) {
+            printf("Step %d :\n", step);
+            node_t *link[2] = {save->i, save->j};
+            which_route_t which_route_return = which_route(link, routes, optimized_matrix->nodes);
+
+            // Condition 1
+            if (which_route_return.num_in == 0) {
+                
+
+                // Condition 2
+            } else if (which_route_return.num_in == 1) {
+
+                // Condition 3
+            } else {
+
+            }
+
+        }
     }
+
     free(save);
+    free(routes);
 }

@@ -1,10 +1,23 @@
 #include "package_distribution.h"
 
 typedef struct {
+    node_t **list;
+} routes_t;
+
+typedef struct {
     node_t *i;
     node_t *j;
     int savings;
 } savings_t;
+
+typedef struct {
+    node_t *node_sel;
+    int num_in;
+    int *i_route;
+    int overlap;
+}which_route_t;
+
+which_route_t which_route(node_t *link, routes_t *routes, int size);
 
 int savings_compare(const void *a, const void *b);
 savings_t *savings(node_t *distribution_node, graph_t *optimized_matrix);
