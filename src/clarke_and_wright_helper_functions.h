@@ -1,30 +1,15 @@
 #include "package_distribution.h"
 
 typedef struct {
-    node_t **list;
-} routes_t;
-
-typedef struct {
     node_t *i;
     node_t *j;
     int savings;
 } savings_t;
 
-typedef struct {
-    node_t *node_sel;
-    int num_in;
-    int *i_route;
-    int overlap;
-}which_route_t;
+int calculate_savings(int i, int j, a_star_matrix_t a_star_matrix, int depot);
 
-which_route_t which_route(node_t *link, routes_t *routes, int size);
+int compare_savings(const void* a, const void* b);
 
-int savings_compare(const void *a, const void *b);
-savings_t *savings(node_t *distribution_node, graph_t *optimized_matrix);
-void push_savings(savings_t savings, savings_t *list, int size);
+int can_merge(int i, int j, int* routes);
 
-int is_interior(node_t *node, node_t **list, int size);
-node_t **merge_routes(node_t **route_one, node_t **route_two, int size, savings_t savings_struct);
-int get_index(node_t **list, node_t *node, int size);
-void reverse_list(node_t **list, int size);
-int size_of_list_without_null(node_t **list, int size);
+int respects_predecessor(int i, int j, int* routes, a_star_matrix_t a_star_matrix);
