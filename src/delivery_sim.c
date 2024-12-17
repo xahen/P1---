@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "delivery_sim.h"
+
+#include <delivery_algorithm.h>
+#include <time.h>
+
 #include "create_routes.h"
 #include "astar_helper_functions.h"
 
@@ -64,21 +69,59 @@ void print_node(int selector, node_t node) {
     }
 }
 
-void print_truck(int selector, truck_t truck) {
-        switch (selector) {
-            case 0: printf("Truck max_weight: %.2lf kilo\n", truck.max_weight);
-                break;
-            case 1: printf("Truck max_volume: %.2lf cubic meters\n", truck.max_volume);
-                break;
-            case 2: printf("Truck average_speed: %d kilometers an hour\n", truck.average_speed);
-                break;
-            case 3: printf("Truck id: %d\n", truck.id);
-                break;
-            default:
-                for (int i = 0; i < 4; i++) {
-                    print_truck(i, truck);
-                }
+void print_truck(int spacing) {
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf(" _______\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf("|       |\\\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf("|_______|_|\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf(" O     O\n");
+
+    for (int i = 0; i < 100; i++) {
+        printf("%c", 238);
+    }
+    printf("\n");
+}
+
+void run_simulation(a_star_matrix_t a_star_matrix, int *routes, int depot) {
+    int time_till_node[a_star_matrix.optimized_matrix->nodes][3];
+
+    time_till_node[0][0] = depot;
+    time_till_node[0][1] = routes[0];
+    //                                                                                   KM/T  Min  Sek
+    double time_spent = a_star_matrix.optimized_matrix->adj_matrix[depot][routes[0]] / 40 * 60 * 60;
+    time_till_node[0][2] = time_spent;
+    for (int i = 1; i < a_star_matrix.optimized_matrix->nodes - 1; i++) {
+        time_till_node[i][0] = routes[i - 1];
+        time_till_node[i][1] = routes[i];
+        time_till_node[i][2] = a_star_matrix.optimized_matrix->adj_matrix[routes[i]][routes[i - 1]] / 40 * 60 * 60;
+    }
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][0] = routes[a_star_matrix.optimized_matrix->nodes - 2];
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][1] = depot;
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][2] = a_star_matrix.optimized_matrix->adj_matrix[depot][routes[a_star_matrix.optimized_matrix->nodes - 2]] / 40 * 60 * 60;
+
+    for (int i = 0; i < a_star_matrix.optimized_matrix->nodes; i++) {
+        printf("%c %c %d\n", 'A' + time_till_node[i][0], 'A' + time_till_node[i][1], time_till_node[i][2]);
+    }
+    getchar();
+
+    for (int i = 0; i < a_star_matrix.optimized_matrix->nodes * 4; i++) {
+        int control_point_not_reached = 1;
+        while (control_point_not_reached) {
+            system("cls");
+            printf("Route: ");
+            printf("%c -> ", depot + 'A');
+            for (int i = 0; routes[i] != -1; i++) {
+                printf("%c -> ", 'A' + routes[i]);
+            }
+            printf("%c\n\n", depot + 'A');
+
+            print_truck(i);
+            sleep(1);
         }
+    }
 }
 
 package_t *generate_random_package() {

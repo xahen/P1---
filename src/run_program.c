@@ -34,12 +34,24 @@ int main(void) {
     display_matrix(a_star_matrix.optimized_matrix);
     display_predecessor_matrix(a_star_matrix.predecessor_matrix);
 
-    clarke_wright_algorithm(a_star_matrix, 0);
+    int depot = 0;
+
+    int *routes = (int*)calloc(graph->nodes, sizeof(int));
+
+    int **route_order = (int**)calloc(graph->nodes, sizeof(int*));
+    for (int i = 0; i < graph->nodes; i++) {
+        route_order[i] = (int*)calloc(graph->nodes, sizeof(int));
+    }
+
+    clarke_wright_algorithm(a_star_matrix, depot, routes, route_order);
 
     printf("\n");
     printf("Time run: %lld\n", time(NULL) - start_time);
     printf("Seed: %d\n", seed);
+    printf("Press enter to run simulation...\n");
+    getchar();
 
+    run_simulation(a_star_matrix, route_order[routes[1]], depot);
 
     free_matrix(graph);
     free(graph);

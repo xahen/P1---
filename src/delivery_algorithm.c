@@ -87,10 +87,10 @@ void a_star(graph_t *graph, a_star_matrix_t *a_star_matrix, node_t *start_node, 
     exit(EXIT_FAILURE);
 }
 
-void clarke_wright_algorithm(a_star_matrix_t a_star_matrix, int depot) {
+void clarke_wright_algorithm(a_star_matrix_t a_star_matrix, int depot, int *routes, int **route_order) {
     int num_nodes = a_star_matrix.optimized_matrix->nodes;
-    int routes[num_nodes]; // Stores the route, that each node belongs to
-    int route_order[num_nodes][num_nodes]; // Stores the sequence of nodes in each route
+    //int routes[num_nodes]; // Stores the route, that each node belongs to
+    //int route_order[num_nodes][num_nodes]; // Stores the sequence of nodes in each route
     savings_t savings_list[(num_nodes - 1) * (num_nodes - 2) / 2]; // Max number of saving pairs
 
     // Initialize routes (all nodes are initially in their own route)
