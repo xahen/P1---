@@ -121,7 +121,7 @@ TEST_CASE(test_create_graph, {
         }
     }
 
-    free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_get_delivery_status, {
@@ -180,7 +180,7 @@ TEST_CASE(test_add_edge, {
     CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
     CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
-    free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_free_matrix, {
