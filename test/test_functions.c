@@ -247,24 +247,46 @@ TEST_CASE(test_add_edge, {
 
     graph_t *graph = create_graph(nodes_amount);
 
+    // Arrange
     int node_src = 1;
     int node_dst = 2;
-    add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
+    // Act
+    add_edge(graph, node_src, node_dst, 1);
+    int result_1 = graph->adj_matrix[node_src][node_dst];
+    int result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
+
+    // Arrange
     node_src = 3;
     node_dst = 4;
-    add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
+    // Act
+    add_edge(graph, node_src, node_dst, 1);
+    result_1 = graph->adj_matrix[node_src][node_dst];
+    result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
+
+    // Arrange
     node_src = 8;
     node_dst = 9;
-    add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
+    // Act
+    add_edge(graph, node_src, node_dst, 1);
+    result_1 = graph->adj_matrix[node_src][node_dst];
+    result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
+
+    free_matrix(graph);
     free(graph);
 })
 
