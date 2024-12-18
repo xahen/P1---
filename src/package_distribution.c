@@ -41,8 +41,6 @@ node_t *create_node(int location_x, int location_y, int id) {
     }
 
     node->parent = NULL;
-    node->left = NULL;
-    node->right = NULL;
     node->f = DBL_MAX;
     node->g = DBL_MAX;
     node->h = DBL_MAX;
