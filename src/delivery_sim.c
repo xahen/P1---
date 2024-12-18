@@ -80,7 +80,7 @@ void print_truck(int spacing) {
     for (int i = 0; i < spacing; i++) printf(" ");
     printf(" O     O\n");
 
-    for (int i = 0; i < 71; i++) {
+    for (int i = 0; i < 90; i++) {
         printf("%c", 238);
     }
     printf("\n");
