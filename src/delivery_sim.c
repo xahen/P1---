@@ -244,7 +244,13 @@ void run_simulation(a_star_matrix_t a_star_matrix, int *routes, int depot) {
             clock = 0;
             current_delay = 0;
         }
+
+        if (total_time_left <= 1) {
+            total_time_left = 0;
+        }
     }
+
+    printf("\n\nFinished delivery to all nodes!\n");
 }
 
 package_t *generate_random_package() {

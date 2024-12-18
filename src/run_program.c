@@ -9,8 +9,8 @@
 
 int main(void) {
     int start_time = time(NULL);
-    //int seed = time(NULL);
-    int seed = 1734538595;
+    int seed = time(NULL);
+    //int seed = 1734538595;
     srand(seed);
 
     graph_t *graph = generate_random_graph();
