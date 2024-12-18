@@ -80,7 +80,7 @@ void print_truck(int spacing) {
     for (int i = 0; i < spacing; i++) printf(" ");
     printf(" O     O\n");
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 71; i++) {
         printf("%c", 238);
     }
     printf("\n");
@@ -149,7 +149,11 @@ void run_simulation(a_star_matrix_t a_star_matrix, int *routes, int depot) {
             }
             printf("%c\n", depot + 'A');
 
-            printf("Current route: \t\t\t\t%c -> %c\n", time_till_node[i][0] + 'A', time_till_node[i][1] + 'A');
+            printf("Current route: \t\t\t\t");
+            for (int j = 0; j < i * 5; j++) {
+                printf(" ");
+            }
+            printf("%c -> %c\n", time_till_node[i][0] + 'A', time_till_node[i][1] + 'A');
 
             printf("\n");
 
@@ -183,18 +187,18 @@ void run_simulation(a_star_matrix_t a_star_matrix, int *routes, int depot) {
 
             print_truck(truck_movement);
 
-            printf("%c: \t\t\t\t\t\tSTARTED\n", 'A' + depot);
+            printf("%c: \t\t\t\t\tSTARTED\n", 'A' + depot);
             for (int j = 0; routes[j] != -1; j++) {
                 if (time_till_node[j][3] <= 0) {
-                    printf("%c: \t\t\t\t\t\tDELIVERED\n", 'A' + routes[j]);
+                    printf("%c: \t\t\t\t\tDELIVERED\n", 'A' + routes[j]);
                 } else {
-                    printf("%c: \t\t\t\t\t\t%d\n", 'A' + routes[j], time_till_node[j][3]);
+                    printf("%c: \t\t\t\t\t%d\n", 'A' + routes[j], time_till_node[j][3]);
                 }
             }
-            if (total_time_left <= 0) {
-                printf("%c: \t\t\t\t\t\tENDED\n", 'A' + depot);
+            if (total_time_left <= 1) {
+                printf("%c: \t\t\t\t\tENDED\n", 'A' + depot);
             } else {
-                printf("%c: \t\t\t\t\t\t%d\n", 'A' + depot, total_time_left);
+                printf("%c: \t\t\t\t\t%d\n", 'A' + depot, total_time_left);
             }
 
             total_time_left--;
