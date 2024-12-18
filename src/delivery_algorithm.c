@@ -151,18 +151,18 @@ void clarke_wright_algorithm(a_star_matrix_t a_star_matrix, int depot, int *rout
             }
 
             // Output the current merge
-            printf("Merged route: %c <-> %c\n", 'A' + i, 'A' +j);
+            //printf("Merged route: %c <-> %c\n", 'A' + i, 'A' +j);
         }
     }
 
     // Print the final merged route in the current order
-    printf("\nFinal route:\n");
+    //printf("\nFinal route:\n");
 
     // Start from the depot
-    printf("%c -> ", depot + 'A');
+    /*printf("%c -> ", depot + 'A');
     int first_route = routes[1]; // Pick a route to print
     for (int i = 0; route_order[first_route][i] != -1; i++) {
         printf("%c -> ", 'A' + route_order[first_route][i]);
     }
-    printf("%c\n", depot + 'A');
+    printf("%c\n", depot + 'A');*/
 }

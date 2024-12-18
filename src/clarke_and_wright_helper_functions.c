@@ -19,7 +19,7 @@ int can_merge(int i, int j, int* routes) {
 
 int respects_predecessor(int i, int j, int* routes, a_star_matrix_t a_star_matrix) {
     if (a_star_matrix.predecessor_matrix->adj_matrix[i][j] != 0 && a_star_matrix.predecessor_matrix->adj_matrix[i][j] != j && routes[i] != routes[j]) {
-        printf("Predecessor constraints!\n");
+        //printf("Predecessor constraints!\n");
         return 0;
     }
     return 1;
