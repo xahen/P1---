@@ -154,9 +154,19 @@ TEST_CASE(test_calculate_trucks, {
 // TEST delivery_algorithm.h
 //
 TEST_CASE(test_a_star, {
-    srand(5);
+    int nodes_amount = 4;
 
-    graph_t *graph = generate_random_graph();
+    graph_t *graph = create_graph(nodes_amount);
+
+    for (int i = 0; i < nodes_amount; i++) {
+        node_t *node = create_node(i+1, i+1, i+1);
+        graph->node_addresses[i] = node;
+    }
+
+    add_edge(graph, 0, 1, ceil(heuristic(*graph->node_addresses[0], *graph->node_addresses[1])));
+    add_edge(graph, 1, 2, ceil(heuristic(*graph->node_addresses[1], *graph->node_addresses[2])));
+    add_edge(graph, 2, 3, ceil(heuristic(*graph->node_addresses[2], *graph->node_addresses[3])));
+
     graph_t optimized_matrix = *graph;
 
     a_star_matrix_t a_star_matrix = {
@@ -172,9 +182,9 @@ TEST_CASE(test_a_star, {
         }
     }
 
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][1], 45);
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][2], 69);
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][3], 48);
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][1], 2);
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][2], 4);
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][3], 5);
 
     free_matrix(graph);
     free(graph);
@@ -182,9 +192,19 @@ TEST_CASE(test_a_star, {
 
 
 TEST_CASE(test_clarke_and_wright, {
-    srand(5);
+    int nodes_amount = 4;
 
-    graph_t *graph = generate_random_graph();
+    graph_t *graph = create_graph(nodes_amount);
+
+    for (int i = 0; i < nodes_amount; i++) {
+        node_t *node = create_node(i+1, i+1, i+1);
+        graph->node_addresses[i] = node;
+    }
+
+    add_edge(graph, 0, 1, ceil(heuristic(*graph->node_addresses[0], *graph->node_addresses[1])));
+    add_edge(graph, 1, 2, ceil(heuristic(*graph->node_addresses[1], *graph->node_addresses[2])));
+    add_edge(graph, 2, 3, ceil(heuristic(*graph->node_addresses[2], *graph->node_addresses[3])));
+
     graph_t optimized_matrix = *graph;
 
     a_star_matrix_t a_star_matrix = {
@@ -212,8 +232,8 @@ TEST_CASE(test_clarke_and_wright, {
     clarke_wright_algorithm(a_star_matrix, depot, routes, route_order);
 
     CHECK_EQ_INT(route_order[routes[1]][0], 1);
-    CHECK_EQ_INT(route_order[routes[1]][1], 3);
-    CHECK_EQ_INT(route_order[routes[1]][2], 7);
+    CHECK_EQ_INT(route_order[routes[1]][1], 2);
+    CHECK_EQ_INT(route_order[routes[1]][2], 3);
 
     free_matrix(graph);
     free(graph);
