@@ -7,6 +7,7 @@
 #include "delivery_sim.h"
 #include "resource_calculation.h"
 #include "create_routes.h"
+#include "astar_helper_functions.h"
 
 //
 // TEST delivery_sim.h
@@ -121,7 +122,7 @@ TEST_CASE(test_create_graph, {
         }
     }
 
-    free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_get_delivery_status, {
@@ -152,7 +153,71 @@ TEST_CASE(test_calculate_trucks, {
 //
 // TEST delivery_algorithm.h
 //
+TEST_CASE(test_a_star, {
+    srand(5);
 
+    graph_t *graph = generate_random_graph();
+    graph_t optimized_matrix = *graph;
+
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph->nodes),
+        &optimized_matrix
+    };
+
+    for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
+            }
+        }
+    }
+
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][1], 45);
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][2], 69);
+    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][3], 48);
+
+    free_matrix(graph);
+    free(graph);
+})
+
+
+TEST_CASE(test_clarke_and_wright, {
+    srand(5);
+
+    graph_t *graph = generate_random_graph();
+    graph_t optimized_matrix = *graph;
+
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph->nodes),
+        &optimized_matrix
+    };
+
+    for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
+            }
+        }
+    }
+
+    int depot = 0;
+
+    int *routes = (int*)calloc(graph->nodes, sizeof(int));
+
+    int **route_order = (int**)calloc(graph->nodes, sizeof(int*));
+    for (int i = 0; i < graph->nodes; i++) {
+        route_order[i] = (int*)calloc(graph->nodes, sizeof(int));
+    }
+
+    clarke_wright_algorithm(a_star_matrix, depot, routes, route_order);
+
+    CHECK_EQ_INT(route_order[routes[1]][0], 1);
+    CHECK_EQ_INT(route_order[routes[1]][1], 3);
+    CHECK_EQ_INT(route_order[routes[1]][2], 7);
+
+    free_matrix(graph);
+    free(graph);
+})
 
 //
 // TEST create_routes.h
@@ -180,7 +245,7 @@ TEST_CASE(test_add_edge, {
     CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
     CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
-    free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_free_matrix, {
@@ -207,6 +272,8 @@ MAIN_RUN_TESTS(
     test_create_graph,
     test_get_delivery_status,
     test_calculate_trucks,
+    test_a_star,
+    test_clarke_and_wright,
     test_add_edge,
     test_free_matrix
 );
