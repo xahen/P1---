@@ -196,9 +196,6 @@ TEST_CASE(test_a_star, {
 
     free_matrix(graph);
     free(graph);
-
-    free_matrix(a_star_matrix.optimized_matrix);
-    free_matrix(a_star_matrix.predecessor_matrix);
 })
 
 
