@@ -64,7 +64,6 @@ void display_predecessor_matrix(graph_t *graph) {
 void free_matrix(graph_t *graph) {
     for(int i = 0; i < graph->nodes; i++) {
         free(graph->adj_matrix[i]);
-        free(graph->node_addresses[i]);
     }
     free(graph->adj_matrix);
     graph->adj_matrix = NULL;
