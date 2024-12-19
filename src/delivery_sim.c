@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "delivery_sim.h"
+
+#include <delivery_algorithm.h>
+#include <iso646.h>
+#include <time.h>
+
 #include "create_routes.h"
 #include "astar_helper_functions.h"
 
@@ -64,21 +70,191 @@ void print_node(int selector, node_t node) {
     }
 }
 
-void print_truck(int selector, truck_t truck) {
-        switch (selector) {
-            case 0: printf("Truck max_weight: %.2lf kilo\n", truck.max_weight);
-                break;
-            case 1: printf("Truck max_volume: %.2lf cubic meters\n", truck.max_volume);
-                break;
-            case 2: printf("Truck average_speed: %d kilometers an hour\n", truck.average_speed);
-                break;
-            case 3: printf("Truck id: %d\n", truck.id);
-                break;
-            default:
-                for (int i = 0; i < 4; i++) {
-                    print_truck(i, truck);
-                }
+void print_truck(int spacing) {
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf(" _______\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf("|       |\\\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf("|_______|_|\n");
+    for (int i = 0; i < spacing; i++) printf(" ");
+    printf(" O     O\n");
+
+    for (int i = 0; i < 90; i++) {
+        printf("%c", 238);
+    }
+    printf("\n");
+}
+
+void run_simulation(a_star_matrix_t a_star_matrix, int *routes, int depot) {
+    int average_speed = 60;
+
+    int time_till_node[a_star_matrix.optimized_matrix->nodes][4];
+
+    time_till_node[0][0] = depot;
+    time_till_node[0][1] = routes[0];
+    //                                                                                         KM/T            Min  Sek
+    double time_spent = (double)a_star_matrix.optimized_matrix->adj_matrix[depot][routes[0]] / average_speed * 60 /** 60*/;
+    time_till_node[0][2] = time_spent;
+    time_till_node[0][3] = time_spent;
+    for (int i = 1; i < a_star_matrix.optimized_matrix->nodes - 1; i++) {
+        time_till_node[i][0] = routes[i - 1];
+        time_till_node[i][1] = routes[i];
+        time_till_node[i][2] = (double)a_star_matrix.optimized_matrix->adj_matrix[routes[i]][routes[i - 1]] / average_speed * 60 /** 60*/;
+        time_till_node[i][3] = time_till_node[i][2] + time_till_node[i-1][3];
+    }
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][0] = routes[a_star_matrix.optimized_matrix->nodes - 2];
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][1] = depot;
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][2] = (double)a_star_matrix.optimized_matrix->adj_matrix[depot][routes[a_star_matrix.optimized_matrix->nodes - 2]] / average_speed * 60 /** 60*/;
+    time_till_node[a_star_matrix.optimized_matrix->nodes - 1][3] = time_till_node[a_star_matrix.optimized_matrix->nodes - 1][2] + time_till_node[a_star_matrix.optimized_matrix->nodes - 2][3];
+
+    int total_time_left = 0;
+    for (int i = 0; i < a_star_matrix.optimized_matrix->nodes; i++) {
+        total_time_left += time_till_node[i][2];
+    }
+
+    for (int i = 0; i < a_star_matrix.optimized_matrix->nodes; i++) {
+        printf("%c %c %d\n", 'A' + time_till_node[i][0], 'A' + time_till_node[i][1], time_till_node[i][2]);
+    }
+
+    printf("Time left: %d\n", total_time_left);
+    getchar();
+
+    int original_total_time = total_time_left;
+    int control_points_reached = 0;
+    int temp_time_till_node = time_till_node[0][2];
+    int delivery_point_reached = 0;
+    int current_delay = 0;
+    int original_schedule = total_time_left;
+    int truck_movement = 0;
+    int truck_movement_trigger = floor(original_schedule / 60);
+    int time_till_next_control_point = 0;
+    int clock = 0;
+
+    for (int i = 0; i < a_star_matrix.optimized_matrix->nodes; i++) {
+        int control_point_not_reached = 1;
+        if (delivery_point_reached == 1) {
+            temp_time_till_node = time_till_node[i][2];
+            delivery_point_reached = 0;
+            control_points_reached = 0;
         }
+        time_till_next_control_point = ceil(time_till_node[i][2] / 4);
+        while (control_point_not_reached) {
+            system("cls");
+
+            printf("Route: \t\t\t\t\t");
+            printf("%c -> ", depot + 'A');
+            for (int i = 0; routes[i] != -1; i++) {
+                printf("%c -> ", 'A' + routes[i]);
+            }
+            printf("%c\n", depot + 'A');
+
+            printf("Current route: \t\t\t\t");
+            for (int j = 0; j < i * 5; j++) {
+                printf(" ");
+            }
+            printf("%c -> %c\n", time_till_node[i][0] + 'A', time_till_node[i][1] + 'A');
+
+            printf("\n");
+
+            if (original_schedule <= 0) {
+                printf("Original time left (no delays): \tROUTE ENDED\n", original_schedule);
+            } else {
+                printf("Original time left (no delays): \t%d minutes\n", original_schedule);
+            }
+
+            printf("Total time left: \t\t\t%d minutes\n", total_time_left);
+            printf("Behind schedule: \t\t\t%d minutes\n", total_time_left - original_schedule);
+            printf("\n");
+
+            printf("Control points reached: \t\t%d\n", control_points_reached);
+            if (control_points_reached != 3) {
+                printf("Time till next control point: \t\t%d minutes\n", time_till_next_control_point);
+            } else {
+                printf("Time till next control point: \t\tALL CONTROL POINTS REACHED\n");
+            }
+
+            printf("Time till next node: \t\t\t%d minutes\n", temp_time_till_node);
+            printf("\n");
+
+            printf("Delay added this control point: \t%d minutes\n", current_delay);
+
+            printf("\n\n");
+
+            if (original_schedule % truck_movement_trigger == 0) {
+                truck_movement++;
+            }
+
+            print_truck(truck_movement);
+
+            printf("%c: \t\t\t\t\tSTARTED\n", 'A' + depot);
+            for (int j = 0; routes[j] != -1; j++) {
+                if (time_till_node[j][3] <= 0) {
+                    printf("%c: \t\t\t\t\tDELIVERED\n", 'A' + routes[j]);
+                } else {
+                    printf("%c: \t\t\t\t\t%d\n", 'A' + routes[j], time_till_node[j][3]);
+                }
+            }
+            if (total_time_left <= 1) {
+                printf("%c: \t\t\t\t\tENDED\n", 'A' + depot);
+            } else {
+                printf("%c: \t\t\t\t\t%d\n", 'A' + depot, total_time_left);
+            }
+
+            total_time_left--;
+            original_schedule--;
+            temp_time_till_node--;
+            time_till_next_control_point--;
+            clock++;
+
+
+            if (temp_time_till_node < 1) {
+                delivery_point_reached = 1;
+                control_point_not_reached = 0;
+            } else if (time_till_next_control_point < 1 && control_points_reached < 3) {
+                control_point_not_reached = 0;
+                control_points_reached++;
+            }
+
+            sleep(1);
+        }
+
+        if (temp_time_till_node > 0) {
+            // Add possible delays.
+            if (rand() % 100 <= 50) {
+                current_delay = rand() % 11;
+                total_time_left += current_delay;
+                temp_time_till_node += current_delay;
+                time_till_node[i][2] += current_delay;
+
+                for (int j = 0; routes[j] != -1; j++) {
+                    time_till_node[j][3] += current_delay;
+                }
+            } else {
+                current_delay = 0;
+            }
+
+            for (int j = 0; routes[j] != -1; j++) {
+                time_till_node[j][3] -= clock;
+            }
+            time_till_node[i][3] = temp_time_till_node;
+            clock = 0;
+
+            i--;
+        } else {
+            for (int j = 0; routes[j] != -1; j++) {
+                time_till_node[j][3] -= clock;
+            }
+            clock = 0;
+            current_delay = 0;
+        }
+
+        if (total_time_left <= 1) {
+            total_time_left = 0;
+        }
+    }
+
+    printf("\n\nFinished delivery to all nodes!\n");
 }
 
 package_t *generate_random_package() {

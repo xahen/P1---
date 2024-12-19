@@ -7,6 +7,7 @@
 #include "delivery_sim.h"
 #include "resource_calculation.h"
 #include "create_routes.h"
+#include "astar_helper_functions.h"
 
 //
 // TEST delivery_sim.h
@@ -121,7 +122,7 @@ TEST_CASE(test_create_graph, {
         }
     }
 
-    free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_get_delivery_status, {
@@ -152,7 +153,99 @@ TEST_CASE(test_calculate_trucks, {
 //
 // TEST delivery_algorithm.h
 //
+TEST_CASE(test_a_star, {
+    // Assert
+    int nodes_amount = 4;
+    graph_t *graph = create_graph(nodes_amount);
 
+    for (int i = 0; i < nodes_amount; i++) {
+        node_t *node = create_node(i+1, i+1, i+1);
+        graph->node_addresses[i] = node;
+    }
+
+    add_edge(graph, 0, 1, ceil(heuristic(*graph->node_addresses[0], *graph->node_addresses[1])));
+    add_edge(graph, 1, 2, ceil(heuristic(*graph->node_addresses[1], *graph->node_addresses[2])));
+    add_edge(graph, 2, 3, ceil(heuristic(*graph->node_addresses[2], *graph->node_addresses[3])));
+
+    graph_t optimized_matrix = *graph;
+
+
+
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph->nodes),
+        &optimized_matrix
+    };
+
+    // Act
+    for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
+            }
+        }
+    }
+
+    int result_1 = a_star_matrix.optimized_matrix->adj_matrix[0][1];
+    int result_2 = a_star_matrix.optimized_matrix->adj_matrix[0][2];
+    int result_3 = a_star_matrix.optimized_matrix->adj_matrix[0][3];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 2);
+    CHECK_EQ_INT(result_2, 4);
+    CHECK_EQ_INT(result_3, 5);
+
+    free_matrix(graph);
+    free(graph);
+})
+
+
+TEST_CASE(test_clarke_and_wright, {
+    int nodes_amount = 4;
+
+    graph_t *graph = create_graph(nodes_amount);
+
+    for (int i = 0; i < nodes_amount; i++) {
+        node_t *node = create_node(i+1, i+1, i+1);
+        graph->node_addresses[i] = node;
+    }
+
+    add_edge(graph, 0, 1, ceil(heuristic(*graph->node_addresses[0], *graph->node_addresses[1])));
+    add_edge(graph, 1, 2, ceil(heuristic(*graph->node_addresses[1], *graph->node_addresses[2])));
+    add_edge(graph, 2, 3, ceil(heuristic(*graph->node_addresses[2], *graph->node_addresses[3])));
+
+    graph_t optimized_matrix = *graph;
+
+    a_star_matrix_t a_star_matrix = {
+        create_graph(graph->nodes),
+        &optimized_matrix
+    };
+
+    for (int i = 0; i < graph->nodes - 1; i++) {
+        for (int j = i + 1; j < graph->nodes; j++) {
+            if(graph->adj_matrix[i][j] == 0) {
+                a_star(graph, &a_star_matrix, graph->node_addresses[i], graph->node_addresses[j]);
+            }
+        }
+    }
+
+    int depot = 0;
+
+    int *routes = (int*)calloc(graph->nodes, sizeof(int));
+
+    int **route_order = (int**)calloc(graph->nodes, sizeof(int*));
+    for (int i = 0; i < graph->nodes; i++) {
+        route_order[i] = (int*)calloc(graph->nodes, sizeof(int));
+    }
+
+    clarke_wright_algorithm(a_star_matrix, depot, routes, route_order);
+
+    CHECK_EQ_INT(route_order[routes[1]][0], 1);
+    CHECK_EQ_INT(route_order[routes[1]][1], 2);
+    CHECK_EQ_INT(route_order[routes[1]][2], 3);
+
+    free_matrix(graph);
+    free(graph);
+})
 
 //
 // TEST create_routes.h
@@ -162,25 +255,47 @@ TEST_CASE(test_add_edge, {
 
     graph_t *graph = create_graph(nodes_amount);
 
+    // Arrange
     int node_src = 1;
     int node_dst = 2;
-    add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
+    // Act
+    add_edge(graph, node_src, node_dst, 1);
+    int result_1 = graph->adj_matrix[node_src][node_dst];
+    int result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
+
+    // Arrange
     node_src = 3;
     node_dst = 4;
-    add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
 
+    // Act
+    add_edge(graph, node_src, node_dst, 1);
+    result_1 = graph->adj_matrix[node_src][node_dst];
+    result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
+
+    // Arrange
     node_src = 8;
     node_dst = 9;
+
+    // Act
     add_edge(graph, node_src, node_dst, 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_src][node_dst], 1);
-    CHECK_EQ_INT(graph->adj_matrix[node_dst][node_src], 1);
+    result_1 = graph->adj_matrix[node_src][node_dst];
+    result_2 = graph->adj_matrix[node_dst][node_src];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 1);
+    CHECK_EQ_INT(result_2, 1);
 
     free_matrix(graph);
+    free(graph);
 })
 
 TEST_CASE(test_free_matrix, {
@@ -207,6 +322,8 @@ MAIN_RUN_TESTS(
     test_create_graph,
     test_get_delivery_status,
     test_calculate_trucks,
+    test_a_star,
+    test_clarke_and_wright,
     test_add_edge,
     test_free_matrix
 );

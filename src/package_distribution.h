@@ -28,8 +28,6 @@ typedef struct node_t {
     double g;
     double h;
     double f;
-    struct node_t* left;
-    struct node_t* right;
 } node_t;
 
 typedef struct {
