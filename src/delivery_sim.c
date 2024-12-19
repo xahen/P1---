@@ -285,8 +285,9 @@ node_t *generate_random_node() {
 
 // Should this really create a pointer?
 // The same goes for the create_graph function...
-graph_t *generate_random_graph() {
-    int node_amount = rand() % 22 + 4;
+graph_t *generate_random_graph(int amount_of_nodes) {
+    //int node_amount = rand() % 22 + 4;
+    int node_amount = amount_of_nodes;
 
     graph_t *graph = create_graph(node_amount);
 
