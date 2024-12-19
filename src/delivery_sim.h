@@ -8,4 +8,4 @@ void run_simulation(a_star_matrix_t a_star_matrix, int* routes, int depot);
 
 package_t *generate_random_package();
 node_t *generate_random_node();
-graph_t *generate_random_graph();
+graph_t *generate_random_graph(int amount_of_nodes);

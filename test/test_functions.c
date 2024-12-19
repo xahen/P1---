@@ -43,10 +43,9 @@ TEST_CASE(test_generate_random_node, {
 
 TEST_CASE(test_generate_random_graph, {
     for (int i = 0; i < 250; i++) {
-        graph_t *graph = generate_random_graph();
+        graph_t *graph = generate_random_graph(15);
         
-        CHECK_TRUE(graph->nodes < 27);
-        CHECK_TRUE(graph->nodes > 3);
+        CHECK_TRUE(graph->nodes == 15);
         CHECK_TRUE(graph->adj_matrix != NULL);
         free_matrix(graph);
         free(graph);
