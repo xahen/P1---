@@ -154,8 +154,8 @@ TEST_CASE(test_calculate_trucks, {
 // TEST delivery_algorithm.h
 //
 TEST_CASE(test_a_star, {
+    // Assert
     int nodes_amount = 4;
-
     graph_t *graph = create_graph(nodes_amount);
 
     for (int i = 0; i < nodes_amount; i++) {
@@ -169,11 +169,14 @@ TEST_CASE(test_a_star, {
 
     graph_t optimized_matrix = *graph;
 
+
+
     a_star_matrix_t a_star_matrix = {
         create_graph(graph->nodes),
         &optimized_matrix
     };
 
+    // Act
     for (int i = 0; i < graph->nodes - 1; i++) {
         for (int j = i + 1; j < graph->nodes; j++) {
             if(graph->adj_matrix[i][j] == 0) {
@@ -182,9 +185,14 @@ TEST_CASE(test_a_star, {
         }
     }
 
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][1], 2);
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][2], 4);
-    CHECK_EQ_INT(a_star_matrix.optimized_matrix->adj_matrix[0][3], 5);
+    int result_1 = a_star_matrix.optimized_matrix->adj_matrix[0][1];
+    int result_2 = a_star_matrix.optimized_matrix->adj_matrix[0][2];
+    int result_3 = a_star_matrix.optimized_matrix->adj_matrix[0][3];
+
+    // Assert
+    CHECK_EQ_INT(result_1, 2);
+    CHECK_EQ_INT(result_2, 4);
+    CHECK_EQ_INT(result_3, 5);
 
     free_matrix(graph);
     free(graph);
