@@ -4,8 +4,8 @@
 #include <math.h>
 int main(void) {
     int start_time = time(NULL);
-    //int seed = time(NULL);
-    int seed = 1733838591;
+    int seed = time(NULL);
+    //int seed = 1733838591;
     srand(seed);
 
     int amount_of_nodes = 0;
