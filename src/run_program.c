@@ -1,7 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#include "delivery_algorithm.h"
+#include "delivery_sim.h"
 #include "resource_calculation.h"
 #include "create_routes.h"
 
 #include <math.h>
+
 int main(void) {
     int start_time = time(NULL);
     int seed = time(NULL);
